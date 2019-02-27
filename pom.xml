@@ -12,6 +12,7 @@
     <java.version>1.8</java.version>
     <mybatis-plus.version>3.1.0</mybatis-plus.version>
     <nekohtml.version>1.9.22</nekohtml.version>
+    <hutool.version>4.5.0</hutool.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -53,6 +54,11 @@
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
       <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>cn.hutool</groupId>
+      <artifactId>hutool-all</artifactId>
+      <version>${hutool.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>

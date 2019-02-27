@@ -5,5 +5,6 @@ import lombok.Data;
 
 @Data
 public class TopicDTO extends Topic {
+    private Long detailId;
     private String content;
 }

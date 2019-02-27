@@ -1,0 +1,8 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="js">
+  <script th:inline="javascript">
+    var preUrl = [[${#httpServletRequest.getContextPath()}]];
+  </script>
+</th:block>
+</html>

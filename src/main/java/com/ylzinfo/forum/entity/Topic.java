@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 //+ id
@@ -23,11 +24,10 @@ import java.util.Date;
 
 @Data
 @TableName("cm_topic")
-public class Topic {
+public class Topic implements Serializable {
     @TableId(type = IdType.AUTO)
     private Long id;
     private Long userId;
-    private String userName;
     private String title;
     private String specialColumn;
     private String belongType;

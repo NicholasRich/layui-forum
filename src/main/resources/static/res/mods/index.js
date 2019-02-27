@@ -6,7 +6,7 @@
 
 
 layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function (exports) {
-
+  var preUrl = '/forum';
   var $ = layui.jquery
       , layer = layui.layer
       , laytpl = layui.laytpl
@@ -56,7 +56,7 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function 
       var that = this, type = typeof data === 'function';
 
       if (type) {
-        options = success
+        options = success;
         success = data;
         data = {};
       }
@@ -72,7 +72,7 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function 
           if (res.status === 0) {
             success && success(res);
           } else {
-            layer.msg(res.msg || res.code, {shift: 6});
+            layer.alert(res.msg || res.code, {shift: 6, icon: 2});
             options.error && options.error();
           }
         }, error: function (e) {
@@ -156,13 +156,13 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function 
               //执行上传实例
               upload.render({
                 elem: '#uploadImg'
-                , url: '/api/upload/'
-                , size: 200
+                , url: preUrl + '/topic/image/upload/'
+                , size: 1024
                 , done: function (res) {
                   if (res.status == 0) {
                     image.val(res.url);
                   } else {
-                    layer.msg(res.msg, {icon: 5});
+                    layer.alert(res.msg, {icon: 5});
                   }
                 }
               });
@@ -272,7 +272,7 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function 
             var rel = /^(http(s)*:\/\/)\b(?!(\w+\.)*(sentsin.com|layui.com))\b/.test(href.replace(/\s/g, ''));
             return '<a href="' + href + '" target="_blank"' + (rel ? ' rel="nofollow"' : '') + '>' + (text || href) + '</a>';
           }).replace(html(), '\<$1 $2\>').replace(html('/'), '\</$1\>') //转移HTML代码
-          .replace(/\n/g, '<br>') //转义换行
+          .replace(/\n/g, '<br>'); //转义换行
       return content;
     }
 
@@ -450,7 +450,6 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function 
     }, {type: 'get'});
   });
 
-
   //回帖榜
   var tplReply = ['{{# layui.each(d.data, function(index, item){ }}'
     , '<dd>'
@@ -473,7 +472,6 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function 
     });
     */
   }
-  ;
 
   //相册
   if ($(window).width() > 750) {
@@ -487,7 +485,6 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function 
       window.open(this.src);
     });
   }
-
 
   //搜索
   $('.fly-search').on('click', function () {
@@ -528,7 +525,6 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function 
           icon: 1
         });
       }
-      ;
     });
   };
   $('#LAY-activate').on('click', function () {
@@ -550,7 +546,6 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function 
 
   //表单提交
   form.on('submit(*)', function (data) {
-    console.log(data);
     var action = $(data.form).attr('action'), button = $(data.elem);
     fly.json(action, data.field, function (res) {
       var end = function () {
@@ -567,7 +562,6 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function 
           end: end
         }) : end();
       }
-      ;
     });
     return false;
   });
@@ -617,7 +611,7 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function 
     , click: function (type) {
       if (type === 'bar1') {
         layer.msg('打开 index.js，开启发表新帖的路径');
-        //location.href = 'jie/add.html';
+        location.href = preUrl + '/topic/add';
       }
     }
   });
