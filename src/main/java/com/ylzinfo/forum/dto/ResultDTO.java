@@ -9,12 +9,14 @@ public class ResultDTO<T> {
     private String action;
     //    上传图片路径
     private String url;
+    //    记录总数
+    private Long count;
     private String msg;
     private T data;
 
     public ResultDTO actionSuccess(String action) {
-        this.setStatus(0);
-        this.setAction(action);
+        this.status = 0;
+        this.action = action;
         return this;
     }
 
@@ -25,14 +27,20 @@ public class ResultDTO<T> {
     }
 
     public ResultDTO fail(String msg) {
-        this.setStatus(500);
-        this.setMsg(msg);
+        this.status = 500;
+        this.msg = msg;
         return this;
     }
 
     public ResultDTO<T> dataSuccess(T t) {
         this.status = 0;
         this.data = t;
+        return this;
+    }
+
+    public ResultDTO<T> pageSuccess(T t, Long count) {
+        dataSuccess(t);
+        this.count = count;
         return this;
     }
 }

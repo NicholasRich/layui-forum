@@ -103,7 +103,9 @@
   <div class="layui-row layui-col-space15">
     <div class="layui-col-md8 content detail">
       <div class="fly-panel detail-box">
-        <h1 id="topic"></h1>
+        <h1 id="topic">
+          <!--标题-->
+        </h1>
         <div class="fly-detail-info">
           <span class="layui-badge">审核中</span>
           <span class="layui-badge layui-bg-green fly-detail-column">动态</span>
@@ -141,7 +143,9 @@
             <span id="updateTime">2017-11-30</span>
           </div>
           <div class="detail-hits" id="LAY_jieAdmin" data-id="123">
-            <span style="padding-right: 10px; color: #FF7200">被赞：60飞吻</span>
+            <span style="padding-right: 10px; color: #FF7200">积分：60飞吻</span>
+            <span class="layui-btn layui-btn-xs jie-admin " type="collect" data-type="add">收藏</span>
+            <span class="layui-btn layui-btn-xs jie-admin  layui-btn-danger" type="collect" data-type="add">取消收藏</span>
             <span class="layui-btn layui-btn-xs jie-admin" type="edit"><a href="add.html">编辑此贴</a></span>
           </div>
         </div>
@@ -156,56 +160,55 @@
         </fieldset>
 
         <ul class="jieda" id="jieda">
-          <!--<li data-id="111">-->
-          <!--<a name="item-1111111111"></a>-->
-          <!--<div class="detail-about detail-about-reply">-->
-          <!--<a class="fly-avatar" href="">-->
-          <!--<img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt=" ">-->
-          <!--</a>-->
-          <!--<div class="fly-detail-user">-->
-          <!--<a href="" class="fly-link">-->
-          <!--<cite>贤心</cite>-->
-          <!--</a>-->
-          <!--</div>-->
-          <!--<div class="detail-hits">-->
-          <!--<span>2017-11-30</span>-->
-          <!--</div>-->
-          <!--</div>-->
-          <!--<div class="detail-body jieda-body photos">-->
-          <!--<p>蓝瘦那个香菇，这是一条没被采纳的回帖</p>-->
-          <!--</div>-->
-          <!--<div class="jieda-reply">-->
-          <!--<span class="jieda-zan" type="zan">-->
-          <!--<i class="iconfont icon-zan"></i>-->
-          <!--<em>0</em>-->
-          <!--</span>-->
-          <!--<span type="reply">-->
-          <!--<i class="iconfont icon-svgmoban53"></i>-->
-          <!--回复-->
-          <!--</span>-->
-          <!--<div class="jieda-admin">-->
-          <!--<span type="edit">编辑</span>-->
-          <!--<span type="del">删除</span>-->
-          <!--<span class="jieda-accept" type="accept">采纳</span>-->
-          <!--</div>-->
-          <!--</div>-->
-          <!--</li>-->
-
+          <li data-id="111">
+            <a name="item-1111111111"></a>
+            <div class="detail-about detail-about-reply">
+              <a class="fly-avatar" href="">
+                <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt=" ">
+              </a>
+              <div class="fly-detail-user">
+                <a href="" class="fly-link">
+                  <cite>贤心</cite>
+                </a>
+              </div>
+              <div class="detail-hits">
+                <span>2017-11-30</span>
+              </div>
+            </div>
+            <div class="detail-body jieda-body photos">
+              <p>蓝瘦那个香菇，这是一条没被采纳的回帖</p>
+            </div>
+            <div class="jieda-reply">
+          <span class="jieda-zan" type="zan">
+          <i class="iconfont icon-zan"></i>
+          <em>0</em>
+          </span><span type="reply">
+          <i class="iconfont icon-svgmoban53"></i>回复
+          </span>
+              <div class="jieda-admin">
+                <span type="edit">编辑</span>
+                <span type="del">删除</span>
+                <span class="jieda-accept" type="accept">采纳</span>
+              </div>
+            </div>
+          </li>
           <!-- 无数据时 -->
           <li class="fly-none">消灭零回复</li>
         </ul>
 
+        <div id="replyPage" style="text-align: center"></div>
+
         <div class="layui-form layui-form-pane">
-          <form th:action="@{/jie/reply/}" method="post">
+          <form th:action="@{/topicReply/insert}" method="post">
             <div class="layui-form-item layui-form-text">
               <a name="comment"></a>
               <div class="layui-input-block">
-                <textarea id="L_content" name="content" required lay-verify="required" placeholder="请输入内容" class="layui-textarea fly-editor"
+                <textarea id="L_content" name="replyContent" required lay-verify="required" placeholder="请输入内容" class="layui-textarea fly-editor"
                           style="height: 150px;"></textarea>
               </div>
             </div>
             <div class="layui-form-item">
-              <input type="hidden" name="jid" value="123">
+              <input type="hidden" name="topicId" th:value="${id}">
               <button class="layui-btn" lay-filter="*" lay-submit>提交回复</button>
             </div>
           </form>
@@ -289,6 +292,7 @@
     <a href="http://fly.layui.com/jie/2461/" target="_blank">微信公众号</a>
   </p>
 </div>
+
 <script th:src="@{/res/layui/layui.js}"></script>
 <th:block th:include="/common/public::js"></th:block>
 <script type="text/html" id="replyTemplate">
@@ -312,7 +316,9 @@
       </div>
 
       <div class="detail-hits">
-        <span>2017-11-30</span>
+        <span id="replyTime">
+          <!--回复时间-->
+        </span>
       </div>
       <!--回答被采纳显示-->
       <i class="iconfont icon-caina" title="最佳答案"></i>
@@ -325,9 +331,9 @@
         <i class="iconfont icon-zan"></i>
         <em>0</em>
       </span>
-      <span type="reply">
-        <i class="iconfont icon-svgmoban53"></i>回复
-      </span>
+      <!--<span type="reply">-->
+      <!--<i class="iconfont icon-svgmoban53"></i>回复-->
+      <!--</span>-->
       <div class="jieda-admin">
         <!--<span type="edit">编辑</span>-->
         <span type="del">删除</span>
@@ -350,20 +356,19 @@
     , base: preUrl + '/res/mods/'
   }).extend({
     fly: 'index'
-  }).use(['fly', 'face'], function () {
+  }).use(['fly', 'face', 'laypage'], function () {
     var $ = layui.$,
         fly = layui.fly;
+    var laypage = layui.laypage;
     var id = [[${id}]];
+    var page = [[${page}]];
+
     //加载帖子内容
-    $.post(preUrl + '/topic/content', {id: id}, function (res) {
+    $.get(preUrl + '/topic/content', {id: id}, function (res) {
       if (res.status == 0) {
-        //如果你是采用模版自带的编辑器，你需要开启以下语句来解析。
-        $('#content').each(function () {
-          var othis = $(this), html = res.data.content;
-          othis.html(fly.content(html));
-        });
         $('#topic').html(res.data.title);
         $('#updateTime').html(res.data.updateTime);
+        $('#content').html(fly.content(res.data.content));
         //相册处理
         if ($(window).width() > 750) {
           layer.photos({
@@ -376,12 +381,57 @@
             window.open(this.src);
           });
         }
+
       } else {
         layer.alert(res.msg, {icon: 2, shift: 6});
       }
     }, 'json');
+
+    //加载分页
+    $.get(preUrl + '/topicReply/count', {topicId: id}, function (res) {
+      if (res.status == 0) {
+        if (res.data > 10) {
+          laypage.render({
+            elem: 'replyPage',
+            curr: page,
+            count: res.data,
+            jump: function (obj, first) {
+              $('#replyPage').children().removeAttr('class');
+              $('#replyPage').children().addClass('laypage-main');
+              var curr = $('.layui-laypage-curr');
+              curr.html(obj.curr);
+              curr.removeAttr('class');
+              curr.addClass('laypage-curr');
+              loadReply(obj.curr);
+            }
+          });
+        } else {
+          loadReply(0);
+        }
+      } else {
+        layer.alert(res.msg, {icon: 2, shift: 6});
+      }
+    }, 'json');
+
     //  加载回复
-    $('#jieda').html($('#replyTemplate').html());
+    function loadReply(page) {
+      $.get(preUrl + '/topicReply/replyPage', {page: page, topicId: id}, function (res) {
+        if (res.status == 0) {
+          var list = res.data;
+          if (list.length > 0) {
+            $('#jieda').html('');
+            $.each(list, function (index, obj) {
+              var reply = $($('#replyTemplate').html());
+              $('.jieda-body', reply).html(fly.content(obj.replyContent));
+              $('#replyTime', reply).html(obj.createTime);
+              $('#jieda').append(reply);
+            });
+          }
+        } else {
+          layer.alert(res.msg, {icon: 2, shift: 6});
+        }
+      }, 'json');
+    }
   });
 </script>
 

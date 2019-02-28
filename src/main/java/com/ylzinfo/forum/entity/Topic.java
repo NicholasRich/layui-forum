@@ -14,7 +14,7 @@ import java.util.Date;
 public class Topic implements Serializable {
     @TableId(type = IdType.AUTO)
     private Long id;
-    private Long userId;
+    private String userId;
     private String title;
     private String specialColumn;
     private String belongType;
@@ -22,9 +22,11 @@ public class Topic implements Serializable {
     private Long fileId;
     private String topicType;
     private String marrow;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
     private Date createTime;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
     private Date updateTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
     private Date endTime;
     private String version;
 }

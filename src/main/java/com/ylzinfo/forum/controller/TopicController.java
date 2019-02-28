@@ -38,7 +38,7 @@ public class TopicController {
     public ResultDTO insert(TopicDTO topicDTO) {
         Long id = topicService.add(topicDTO);
         if (id != null) {
-            return new ResultDTO().actionSuccess(request.getContextPath() + "/topic/detail?id=" + id);
+            return new ResultDTO().actionSuccess(request.getContextPath() + "/topic/detail?page=0&id=" + id);
         }
         return new ResultDTO().fail("发帖失败");
     }
@@ -49,12 +49,13 @@ public class TopicController {
     }
 
     @GetMapping("detail")
-    public String detail(Model model, Long id) {
+    public String detail(Model model, Long id, Long page) {
         model.addAttribute("id", id);
+        model.addAttribute("page", page);
         return "jie/detail";
     }
 
-    @PostMapping("content")
+    @GetMapping("content")
     @ResponseBody
     public ResultDTO<TopicDTO> content(Long id) {
         return new ResultDTO<TopicDTO>().dataSuccess(topicService.getDetail(id));
