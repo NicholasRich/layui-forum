@@ -36,8 +36,9 @@ public class TopicController {
     @PostMapping("insert")
     @ResponseBody
     public ResultDTO insert(TopicDTO topicDTO) {
-        if (topicService.add(topicDTO) > 0) {
-            return new ResultDTO().actionSuccess(request.getContextPath() + "/topic/detail");
+        Long id = topicService.add(topicDTO);
+        if (id != null) {
+            return new ResultDTO().actionSuccess(request.getContextPath() + "/topic/detail?id=" + id);
         }
         return new ResultDTO().fail("发帖失败");
     }

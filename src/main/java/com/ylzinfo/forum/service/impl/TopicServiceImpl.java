@@ -1,7 +1,6 @@
 package com.ylzinfo.forum.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ylzinfo.forum.dto.TopicDTO;
@@ -14,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-
 @Service
 public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic> implements TopicService {
     @Autowired
@@ -25,16 +22,13 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic> implements
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int add(TopicDTO topicDTO) {
-        Date now = DateUtil.date();
-        topicDTO.setCreateTime(now);
-        topicDTO.setUpdateTime(now);
+    public Long add(TopicDTO topicDTO) {
         topicService.save(topicDTO);
         TopicDetail topicDetail = new TopicDetail();
         topicDetail.setContent(topicDTO.getContent());
         topicDetail.setTopicId(topicDTO.getId());
         topicDetailService.save(topicDetail);
-        return 1;
+        return topicDTO.getId();
     }
 
     @Override

@@ -10,6 +10,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     @ResponseBody
     public ResultDTO handler(Exception e) {
+        e.printStackTrace();
         return new ResultDTO().fail(e.getMessage() == null ? "接口异常" : e.getMessage());
     }
 }
