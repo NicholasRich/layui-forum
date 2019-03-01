@@ -1,5 +1,4 @@
 layui.define(function (exports) {
-  var preUrl = '/forum';
   var face = {
     "[微笑]": preUrl + "/res/layui/images/face/0.gif",
     "[嘻嘻]": preUrl + "/res/layui/images/face/1.gif",

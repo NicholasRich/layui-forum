@@ -17,6 +17,7 @@ public class TopicReply implements Serializable {
     private Long topicId;
     private String userId;
     private String replyContent;
+    private String adoption;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
     private Date createTime;
 }

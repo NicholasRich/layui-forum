@@ -3,6 +3,7 @@ package com.ylzinfo.forum.controller;
 import com.ylzinfo.forum.dto.ResultDTO;
 import com.ylzinfo.forum.dto.TopicDTO;
 import com.ylzinfo.forum.entity.Topic;
+import com.ylzinfo.forum.enums.BelongType;
 import com.ylzinfo.forum.service.TopicService;
 import com.ylzinfo.forum.util.UploadUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,7 @@ public class TopicController {
     @PostMapping("insert")
     @ResponseBody
     public ResultDTO insert(TopicDTO topicDTO) {
-        Long id = topicService.add(topicDTO);
+        Long id = topicService.insert(topicDTO);
         if (id != null) {
             return new ResultDTO().actionSuccess(request.getContextPath() + "/topic/detail?page=0&id=" + id);
         }
@@ -50,8 +51,12 @@ public class TopicController {
 
     @GetMapping("detail")
     public String detail(Model model, Long id, Long page) {
+        Topic topic = topicService.getById(id);
         model.addAttribute("id", id);
         model.addAttribute("page", page);
+        model.addAttribute("topicType", topic.getTopicType());
+        model.addAttribute("belongType", BelongType.valueOf(topic.getBelongType()).getType());
+        model.addAttribute("marrow", topic.getMarrow());
         return "jie/detail";
     }
 

@@ -5,7 +5,7 @@ import com.ylzinfo.forum.dto.TopicDTO;
 import com.ylzinfo.forum.entity.Topic;
 
 public interface TopicService extends IService<Topic> {
-    Long add(TopicDTO topicDTO);
+    Long insert(TopicDTO topicDTO);
 
     TopicDTO getDetail(Long id);
 }

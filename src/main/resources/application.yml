@@ -6,7 +6,7 @@ mybatis-plus:
     refresh: true
 spring:
   datasource:
-    url: jdbc:mysql://192.168.56.130:3306/info-platform?useSSL=false
+    url: jdbc:mysql://192.168.56.128:3306/info-platform?useSSL=false&allowPublicKeyRetrieval=true
     username: root
     password: 123456
     driver-class-name: com.mysql.jdbc.Driver

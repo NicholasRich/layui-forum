@@ -7,16 +7,16 @@ import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
-import java.io.Serializable;
-
 @Data
-@TableName("pm_topic_detail")
 @RequiredArgsConstructor(staticName = "getInstance")
-public class TopicDetail implements Serializable {
+@TableName("rl_user_topic_action")
+public class UserTopicAction {
     @TableId(type = IdType.AUTO)
     private Long id;
     @NonNull
     private Long topicId;
     @NonNull
-    private String content;
+    private String userId;
+    @NonNull
+    private String userTopicType;
 }

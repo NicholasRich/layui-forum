@@ -1,9 +1,7 @@
 package com.ylzinfo.forum.controller;
 
 import cn.hutool.core.util.NumberUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.ylzinfo.forum.dto.ResultDTO;
 import com.ylzinfo.forum.entity.TopicReply;
 import com.ylzinfo.forum.service.TopicReplyService;
@@ -32,8 +30,8 @@ public class TopicReplyController {
             return new ResultDTO().fail("回复失败");
         }
         Long id = topicReply.getTopicId();
-        int count = topicReplyService.count(new QueryWrapper<TopicReply>()
-                .eq("topic_id", id));
+        int count = topicReplyService.count(Wrappers.<TopicReply>lambdaQuery()
+                .eq(TopicReply::getTopicId, id));
         int page = NumberUtil.partValue(count, 10);
         return new ResultDTO().actionSuccess(request.getContextPath() + "/topic/detail?id=" + id + "&page=" + page);
     }
@@ -41,15 +39,23 @@ public class TopicReplyController {
     @GetMapping("replyPage")
     @ResponseBody
     public ResultDTO<List<TopicReply>> replyPage(Long topicId, Long page) {
-        IPage<TopicReply> iPage = topicReplyService.page(new Page<>(page, 10), new QueryWrapper<TopicReply>()
-                .eq("topic_id", topicId));
-        return new ResultDTO<List<TopicReply>>().pageSuccess(iPage.getRecords(), iPage.getTotal());
+        return new ResultDTO<List<TopicReply>>().dataSuccess(topicReplyService.getReplyPage(topicId, page));
     }
 
     @GetMapping("count")
     @ResponseBody
     public ResultDTO<Integer> count(Long topicId) {
-        return new ResultDTO<Integer>().dataSuccess(topicReplyService.count(new QueryWrapper<TopicReply>()
-                .eq("topic_id", topicId)));
+        return new ResultDTO<Integer>().dataSuccess(topicReplyService.count(Wrappers.<TopicReply>lambdaQuery()
+                .eq(TopicReply::getTopicId, topicId)));
+    }
+
+    @PostMapping("adoption")
+    @ResponseBody
+    public ResultDTO adoption(TopicReply topicReply) {
+        if (topicReplyService.adoption(topicReply)) {
+            return new ResultDTO().actionSuccess(request.getContextPath() + "/topic/detail?page=0&id=" + topicReply.getTopicId());
+        } else {
+            return new ResultDTO().fail("采纳失败");
+        }
     }
 }

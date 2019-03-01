@@ -32,8 +32,21 @@ public class ResultDTO<T> {
         return this;
     }
 
+    public ResultDTO success(String msg) {
+        this.status = 0;
+        this.msg = msg;
+        return this;
+    }
+
     public ResultDTO<T> dataSuccess(T t) {
         this.status = 0;
+        this.data = t;
+        return this;
+    }
+
+    public ResultDTO<T> dataSuccess(T t, String msg) {
+        this.status = 0;
+        this.msg = msg;
         this.data = t;
         return this;
     }

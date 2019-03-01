@@ -6,7 +6,6 @@
 
 
 layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function (exports) {
-  var preUrl = '/forum';
   var $ = layui.jquery
       , layer = layui.layer
       , laytpl = layui.laytpl
@@ -76,7 +75,7 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function 
             options.error && options.error();
           }
         }, error: function (e) {
-          layer.msg('请求异常，请重试', {shift: 6});
+          layer.msg('请求异常，请重试', {shift: 6, icon: 2});
           options.error && options.error(e);
         }
       });
