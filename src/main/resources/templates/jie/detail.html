@@ -11,7 +11,6 @@
   <link rel="stylesheet" th:href="@{/res/css/global.css}">
 </head>
 <body>
-
 <div class="fly-header layui-bg-black">
   <div class="layui-container">
     <a class="fly-logo" href="/">
@@ -54,6 +53,7 @@
       <li class="layui-nav-item">
         <a class="fly-nav-avatar" href="javascript:;">
           <cite class="layui-hide-xs">贤心</cite>
+          <input type="hidden" value="admin" id="userId">
           <i class="iconfont icon-renzheng layui-hide-xs" title="认证信息：layui 作者"></i>
           <i class="layui-badge fly-badge-vip layui-hide-xs">VIP3</i>
           <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg">
@@ -107,27 +107,19 @@
           <!--标题-->
         </h1>
         <div class="fly-detail-info">
-          <!--<span class="layui-badge">审核中</span>-->
-          <span class="layui-badge layui-bg-green fly-detail-column" id="belongType">动态</span>
-
-          <span class="layui-badge" style="background-color: #999;" id="noFinish">未结</span>
-          <span class="layui-badge" style="background-color: #5FB878;" id="finish">已结</span>
-
-          <span class="layui-badge layui-bg-black" id="top">置顶</span>
-          <span class="layui-badge layui-bg-red" id="marrow">精帖</span>
-
+          <span id="topicStatus">
+            <!--<span class="layui-badge">审核中</span>-->
+            <span class="layui-badge layui-bg-green fly-detail-column" id="belongType">动态</span>
+            <span class="layui-badge" style="background-color: #999;display: none" id="noFinish">未结</span>
+            <span class="layui-badge" style="background-color: #5FB878;display: none" id="finish">已结</span>
+            <span class="layui-badge layui-bg-black" id="top" style="display: none">置顶</span>
+            <span class="layui-badge layui-bg-red" id="marrow" style="display: none">精帖</span>
+          </span>
           <div class="fly-admin-box" th:attr="data-id=${id}">
-            <span class="layui-btn layui-btn-xs jie-admin" type="del" id="topicDel">删除</span>
-
-            <span class="layui-btn layui-btn-xs jie-admin" id="doTop" type="set" field="stick" rank="1">置顶</span>
-            <span class="layui-btn layui-btn-xs jie-admin" id="cancelTop" type="set" field="stick" rank="0" style="background-color:#ccc;">取消置顶</span>
-
-            <span class="layui-btn layui-btn-xs jie-admin" id="doMarrow" type="set" field="status" rank="1">加精</span>
-            <span class="layui-btn layui-btn-xs jie-admin" id="cancelMarrow" type="set" field="status" rank="0" style="background-color:#ccc;">取消加精
-            </span>
+            <!--帖子状态操作-->
           </div>
           <span class="fly-list-nums"> 
-            <a href="#comment"><i class="iconfont" title="回答">&#xe60c;</i> 66</a>
+            <a href="#comment"><i class="iconfont" title="回答">&#xe60c;</i></a>
             <i class="iconfont" title="人气">&#xe60b;</i> 99999
           </span>
         </div>
@@ -145,17 +137,16 @@
           </div>
           <div class="detail-hits" id="LAY_jieAdmin" th:attr="data-id=${id}">
             <span style="padding-right: 10px; color: #FF7200">积分：60飞吻</span>
-            <span class="layui-btn layui-btn-xs jie-admin" type="edit"><a href="add.html">编辑此贴</a></span>
           </div>
         </div>
-        <div class="detail-body photos" id="content">
+        <div class=" detail-body photos" id="content">
           <!--这里是帖子内容-->
         </div>
       </div>
 
       <div class="fly-panel detail-box" id="flyReply">
         <fieldset class="layui-elem-field layui-field-title" style="text-align: center;">
-          <legend>回帖</legend>
+          <legend id="pagePoint">回帖</legend>
         </fieldset>
 
         <ul class="jieda" id="jieda">
@@ -284,16 +275,28 @@
 </div>
 
 <div class="fly-footer">
-  <p><a href="http://fly.layui.com/" target="_blank">Fly社区</a> 2017 &copy; <a href="http://www.layui.com/" target="_blank">layui.com 出品</a></p>
+  <p><a href="http://fly.layui.com/" target="_blank">Fly社区</a> 2017 &copy; <a href="http://www.layui.com/" target="_blank">layui.com
+    出品</a></p>
   <p>
     <a href="http://fly.layui.com/jie/3147/" target="_blank">付费计划</a>
     <a href="http://www.layui.com/template/fly/" target="_blank">获取Fly社区模版</a>
     <a href="http://fly.layui.com/jie/2461/" target="_blank">微信公众号</a>
   </p>
 </div>
-
 <script th:src="@{/res/layui/layui.js}"></script>
 <th:block th:include="/common/public::js"></th:block>
+<script type="text/html" id="badgeTemplate">
+  <div>
+    <span class="layui-btn layui-btn-xs jie-admin" id="edit" href="/topicDetail/edit">编辑此贴</span>
+    <span class="layui-btn layui-btn-xs jie-admin" id="collection" href="/collection/insert">收藏</span>
+    <span class="layui-btn layui-btn-xs jie-admin layui-btn-danger" id="cancelCollection" href="/collection/delete">取消收藏</span>
+    <span class="layui-btn layui-btn-xs jie-admin" id="topicDel" href="/topic/delete">删除</span>
+    <span class="layui-btn layui-btn-xs jie-admin" id="doTop" href="/topicTop/insert">置顶</span>
+    <span class="layui-btn layui-btn-xs jie-admin" id="cancelTop" style="background-color:#ccc;" href="/topicTop/delete">取消置顶</span>
+    <span class="layui-btn layui-btn-xs jie-admin" id="doMarrow" href="/topic/marrow">加精</span>
+    <span class="layui-btn layui-btn-xs jie-admin" id="cancelMarrow" style="background-color:#ccc;" href="/topic/cancelMarrow">取消加精</span>
+  </div>
+</script>
 <script type="text/html" id="replyTemplate">
   <li>
     <a name="item-1111111111"></a>
@@ -335,7 +338,7 @@
       <!--</span>-->
       <div class="jieda-admin">
         <!--<span type="edit">编辑</span>-->
-        <span type="del">删除</span>
+        <span id="replyDel">删除</span>
         <span class="jieda-accept" type="accept">采纳</span>
       </div>
     </div>
@@ -362,27 +365,110 @@
     var laypage = layui.laypage;
     var topicId = [[${id}]];
     var page = [[${page}]];
-    var topicType = [[${topicType}]];
-    var belongType = [[${belongType}]];
-    var marrow = [[${marrow}]];
+    var topicType = null;
 
-    //徽章处理
-    function badgeHandler() {
-      if (marrow == 'NOMARROW') {
-        $('#marrow').remove();
-        $('#cancelMarrow').remove();
-      } else {
-        $('#marrow').remove();
+    var badgeTemplate = $($('#badgeTemplate').html());
+    $('.jie-admin', badgeTemplate).each(function (index, ele) {
+      $(this).attr('href', preUrl + $(this).attr('href'));
+    });
+
+    //头部小徽章处理
+    function badgeHandler(data) {
+      $('#belongType').html(data.belongType);
+      if (data.userId === $('#userId').val() || data.userId === 'admin') {
+        $('.fly-admin-box').append($('#topicDel', badgeTemplate).prop('outerHTML'));
       }
-      if (topicType == 'FINISH') {
-        $('#noFinish').remove();
+      $('.fly-admin-box').append(' ');
+      topicType = data.topicType;
+      if (data.topicType === 'FINISH') {
+        $('#finish').show();
       } else {
-        $('#finish').remove();
+        if (data.userId === $('#userId').val()) {
+          $('#LAY_jieAdmin').append($('#edit', badgeTemplate).prop('outerHTML'));
+        }
+        $('#noFinish').show();
       }
-      $('#belongType').html(belongType)
+      if (data.topId) {
+        $('#top').show();
+        if (data.userId === 'admin') {
+          $('.fly-admin-box').append($('#cancelTop', badgeTemplate).prop('outerHTML'));
+        }
+      } else {
+        if (data.userId === 'admin') {
+          $('.fly-admin-box').append($('#doTop', badgeTemplate).prop('outerHTML'));
+        }
+      }
+      $('.fly-admin-box').append(' ');
+      if (data.marrow === 'NOMARROW') {
+        if (data.userId === 'admin') {
+          $('.fly-admin-box').append($('#doMarrow', badgeTemplate).prop('outerHTML'));
+        }
+      } else {
+        $('#marrow').show();
+        if (data.userId === 'admin') {
+          $('.fly-admin-box').append($('#cancelMarrow', badgeTemplate).prop('outerHTML'));
+        }
+      }
+      if (data.collectionId) {
+        $('#LAY_jieAdmin').append($('#cancelCollection', badgeTemplate).prop('outerHTML'));
+      } else {
+        $('#LAY_jieAdmin').append($('#collection', badgeTemplate).prop('outerHTML'));
+      }
     }
 
-    badgeHandler();
+    //徽章点击事件
+    $('body').on('click', '.jie-admin', function () {
+      var badge = $(this);
+
+      function ajax(i) {
+        $.post(badge.attr('href'), {topicId: topicId}, function (res) {
+          if (res.status === 0) {
+            layer.msg(res.msg, {icon: 1});
+            switch (badge.attr('id')) {
+              case 'collection':
+                badge.replaceWith($('#cancelCollection', badgeTemplate).prop('outerHTML'));
+                break;
+              case 'cancelCollection':
+                badge.replaceWith($('#collection', badgeTemplate).prop('outerHTML'));
+                break;
+              case 'doTop':
+                badge.replaceWith($('#cancelTop', badgeTemplate).prop('outerHTML'));
+                $('#top').show();
+                break;
+              case 'cancelTop':
+                badge.replaceWith($('#doTop', badgeTemplate).prop('outerHTML'));
+                $('#top').hide();
+                break;
+              case 'doMarrow':
+                badge.replaceWith($('#cancelMarrow', badgeTemplate).prop('outerHTML'));
+                $('#marrow').show();
+                break;
+              case 'cancelMarrow':
+                badge.replaceWith($('#doMarrow', badgeTemplate).prop('outerHTML'));
+                $('#marrow').hide();
+            }
+          } else {
+            layer.alert(res.msg, {icon: 2, shift: 6});
+          }
+          layer.close(i);
+        }, 'json');
+      }
+
+      if (badge.attr('id') === 'edit') {
+        location.href = badge.attr('href') + '?id=' + topicId;
+      }
+
+      if (badge.attr('id') === 'topicDel') {
+        layer.confirm('确定要删除该帖吗？', {icon: 3}, function (index) {
+          var i = layer.load(1);
+          ajax(i);
+          location.href = preUrl + '/jie/index';
+        });
+      } else {
+        var i = layer.load(1);
+        ajax(i);
+      }
+    });
 
     //相册处理
     function photoHandler() {
@@ -406,6 +492,7 @@
         $('#updateTime').html(res.data.updateTime);
         $('#content').html(fly.content(res.data.content));
         photoHandler();
+        badgeHandler(res.data);
       } else {
         layer.alert(res.msg, {icon: 2, shift: 6});
       }
@@ -414,6 +501,7 @@
     //加载分页
     $.get(preUrl + '/topicReply/count', {topicId: topicId}, function (res) {
       if (res.status === 0) {
+        $('i[title="回答"]').after(res.data);
         if (res.data > 10) {
           laypage.render({
             elem: 'replyPage',
@@ -427,6 +515,9 @@
               curr.removeAttr('class');
               curr.addClass('laypage-curr');
               loadReply(obj.curr);
+              if (!first) {
+                $('html').scrollTop($('#pagePoint').offset().top - 100);
+              }
             }
           });
         } else {
@@ -452,11 +543,13 @@
               if (obj.adoption != 'ADOPTION') {
                 $('.icon-caina', reply).remove();
               }
+              if (obj.userId != $('#userId').val() || obj.adoption === 'ADOPTION') {
+                $('#replyDel', reply).remove();
+              }
               $('#jieda').append(reply);
             });
-            if (topicType == 'FINISH') {
+            if (topicType === 'FINISH') {
               $('.jieda-accept').remove();
-              $('#noFinish').remove();
             }
           }
         } else {

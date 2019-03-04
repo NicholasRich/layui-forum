@@ -7,4 +7,6 @@ import lombok.Data;
 public class TopicDTO extends Topic {
     private Long detailId;
     private String content;
+    private Long topId;
+    private Long collectionId;
 }

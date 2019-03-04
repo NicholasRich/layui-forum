@@ -76,15 +76,16 @@
     <div class="layui-form layui-form-pane">
       <div class="layui-tab layui-tab-brief" lay-filter="user">
         <ul class="layui-tab-title">
-          <li class="layui-this">发表新帖<!-- 编辑帖子 --></li>
+          <li class="layui-this" id="desc">发表新帖<!-- 编辑帖子 --></li>
         </ul>
         <div class="layui-form layui-tab-content" id="LAY_ucm" style="padding: 20px 0;">
           <div class="layui-tab-item layui-show">
-            <form th:action="@{/topic/insert}" method="post">
+            <form th:action="@{/topic/insert}" method="post" lay-filter="form" class="layui-form">
               <div class="layui-row layui-col-space15 layui-form-item">
                 <div class="layui-col-md3">
                   <label class="layui-form-label">所在专栏</label>
                   <div class="layui-input-block">
+                    <input class="layui-input layui-hide" name="id" th:value="${id}">
                     <select lay-verify="required" name="belongType" lay-filter="column">
                       <option></option>
                       <option value="QUESTION">提问</option>
@@ -163,7 +164,7 @@
               <!--</div>-->
               <!--</div>-->
               <div class="layui-form-item">
-                <button class="layui-btn" lay-filter="*" lay-submit>立即发布</button>
+                <button class="layui-btn" lay-filter="*" lay-submit id="save">立即发布</button>
               </div>
             </form>
           </div>
@@ -184,7 +185,7 @@
 
 <script th:src="@{/res/layui/layui.js}"></script>
 <th:block th:include="/common/public::js"></th:block>
-<script>
+<script th:inline="javascript">
   layui.cache.page = 'jie';
   layui.cache.user = {
     username: '游客'
@@ -198,7 +199,24 @@
     , base: preUrl + '/res/mods/'
   }).extend({
     fly: 'index'
-  }).use('fly');
+  }).use('fly', function () {
+    var form = layui.form;
+    var $ = layui.$;
+    var id = [[${id}]];
+    if (id) {
+      $('#desc').html('编辑帖子');
+      $('#save').html('确认修改');
+      $.get(preUrl + '/topicDetail/getOne', {id: id}, function (res) {
+        if (res.status === 0 && res.data) {
+          form.val('form', res.data);
+          $('.layui-this').click();
+          $('form').attr('action', preUrl + '/topicDetail/update');
+        } else {
+          layer.alert(res.msg, {icon: 2, shift: 6});
+        }
+      }, 'json')
+    }
+  });
 </script>
 
 </body>

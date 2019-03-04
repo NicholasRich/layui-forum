@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -44,12 +45,12 @@ public class TopicReplyServiceImpl extends ServiceImpl<TopicReplyMapper, TopicRe
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean adoption(TopicReply topicReply) {
-        topicReplyService.update(Wrappers.<TopicReply>lambdaUpdate()
+        return topicReplyService.update(Wrappers.<TopicReply>lambdaUpdate()
                 .set(TopicReply::getAdoption, "ADOPTION")
-                .eq(TopicReply::getId, topicReply.getId()));
-        topicService.update(Wrappers.<Topic>lambdaUpdate()
+                .eq(TopicReply::getId, topicReply.getId()))
+                && topicService.update(Wrappers.<Topic>lambdaUpdate()
                 .set(Topic::getTopicType, "FINISH")
+                .set(Topic::getUpdateTime, new Date())
                 .eq(Topic::getId, topicReply.getTopicId()));
-        return true;
     }
 }

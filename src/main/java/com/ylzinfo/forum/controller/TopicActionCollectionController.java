@@ -28,16 +28,18 @@ public class TopicActionCollectionController {
         return new ResultDTO<Long>().dataSuccess(action == null ? null : action.getId());
     }
 
-    @PostMapping("remove")
+    @PostMapping("delete")
     @ResponseBody
-    public ResultDTO remove(Long cid) {
-        if (!userTopicActionService.removeById(cid)) {
+    public ResultDTO remove(Long topicId) {
+        if (!userTopicActionService.remove(Wrappers.<UserTopicAction>lambdaQuery()
+                .eq(UserTopicAction::getTopicId, topicId)
+                .eq(UserTopicAction::getUserId, UserUtil.getUserId()))) {
             return new ResultDTO().fail("取消失败");
         }
         return new ResultDTO().success("取消成功");
     }
 
-    @PostMapping("add")
+    @PostMapping("insert")
     @ResponseBody
     public ResultDTO add(Long topicId) {
         UserTopicAction action = UserTopicAction.getInstance(topicId, UserUtil.getUserId(), "COLLECTION");

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.ylzinfo.forum.dto.ResultDTO;
 import com.ylzinfo.forum.entity.TopicReply;
 import com.ylzinfo.forum.service.TopicReplyService;
+import com.ylzinfo.forum.util.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +27,7 @@ public class TopicReplyController {
     @PostMapping("insert")
     @ResponseBody
     public ResultDTO insert(TopicReply topicReply) {
+        topicReply.setUserId(UserUtil.getUserId());
         if (!topicReplyService.save(topicReply)) {
             return new ResultDTO().fail("回复失败");
         }

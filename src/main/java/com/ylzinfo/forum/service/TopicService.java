@@ -8,4 +8,7 @@ public interface TopicService extends IService<Topic> {
     Long insert(TopicDTO topicDTO);
 
     TopicDTO getDetail(Long id);
+
+    boolean delete(Long topicId);
+
 }

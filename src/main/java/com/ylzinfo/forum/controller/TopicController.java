@@ -1,11 +1,12 @@
 package com.ylzinfo.forum.controller;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.ylzinfo.forum.dto.ResultDTO;
 import com.ylzinfo.forum.dto.TopicDTO;
 import com.ylzinfo.forum.entity.Topic;
-import com.ylzinfo.forum.enums.BelongType;
 import com.ylzinfo.forum.service.TopicService;
 import com.ylzinfo.forum.util.UploadUtil;
+import com.ylzinfo.forum.util.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,6 +38,7 @@ public class TopicController {
     @PostMapping("insert")
     @ResponseBody
     public ResultDTO insert(TopicDTO topicDTO) {
+        topicDTO.setUserId(UserUtil.getUserId());
         Long id = topicService.insert(topicDTO);
         if (id != null) {
             return new ResultDTO().actionSuccess(request.getContextPath() + "/topic/detail?page=0&id=" + id);
@@ -51,12 +53,8 @@ public class TopicController {
 
     @GetMapping("detail")
     public String detail(Model model, Long id, Long page) {
-        Topic topic = topicService.getById(id);
         model.addAttribute("id", id);
         model.addAttribute("page", page);
-        model.addAttribute("topicType", topic.getTopicType());
-        model.addAttribute("belongType", BelongType.valueOf(topic.getBelongType()).getType());
-        model.addAttribute("marrow", topic.getMarrow());
         return "jie/detail";
     }
 
@@ -71,5 +69,38 @@ public class TopicController {
     public ResultDTO upload(@RequestParam("file") MultipartFile multipartFile) throws IOException {
         String preUrl = request.getContextPath();
         return new ResultDTO().imageSuccess(UploadUtil.imageUpload(multipartFile, preUrl));
+    }
+
+    @PostMapping("delete")
+    @ResponseBody
+    public ResultDTO delete(Long topicId) {
+        if (topicService.delete(topicId)) {
+            return new ResultDTO().success("删除成功");
+        }
+        return new ResultDTO().fail("删除失败");
+    }
+
+    @PostMapping("marrow")
+    @ResponseBody
+    public ResultDTO marrow(Long topicId) {
+        if (topicService.update(Wrappers.<Topic>lambdaUpdate()
+                .eq(Topic::getId, topicId)
+                .set(Topic::getMarrow, "MARROW"))) {
+            return new ResultDTO().success("加精成功");
+        } else {
+            return new ResultDTO().fail("加精失败");
+        }
+    }
+
+    @PostMapping("cancelMarrow")
+    @ResponseBody
+    public ResultDTO cancelMarrow(Long topicId) {
+        if (topicService.update(Wrappers.<Topic>lambdaUpdate()
+                .eq(Topic::getId, topicId)
+                .set(Topic::getMarrow, "NOMARROW"))) {
+            return new ResultDTO().success("取消成功");
+        } else {
+            return new ResultDTO().fail("取消失败");
+        }
     }
 }

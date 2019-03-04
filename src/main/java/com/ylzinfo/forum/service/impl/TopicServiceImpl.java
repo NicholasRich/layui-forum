@@ -6,12 +6,20 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ylzinfo.forum.dto.TopicDTO;
 import com.ylzinfo.forum.entity.Topic;
 import com.ylzinfo.forum.entity.TopicDetail;
+import com.ylzinfo.forum.entity.TopicGiveLike;
+import com.ylzinfo.forum.entity.TopicReply;
+import com.ylzinfo.forum.entity.TopicTop;
+import com.ylzinfo.forum.entity.TopicWarmChannel;
 import com.ylzinfo.forum.entity.UserTopicAction;
+import com.ylzinfo.forum.enums.BelongType;
 import com.ylzinfo.forum.mapper.TopicMapper;
 import com.ylzinfo.forum.service.TopicDetailService;
+import com.ylzinfo.forum.service.TopicGiveLikeService;
+import com.ylzinfo.forum.service.TopicReplyService;
 import com.ylzinfo.forum.service.TopicService;
+import com.ylzinfo.forum.service.TopicTopService;
+import com.ylzinfo.forum.service.TopicWarmChannelService;
 import com.ylzinfo.forum.service.UserTopicActionService;
-import com.ylzinfo.forum.util.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,12 +32,20 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic> implements
     private TopicService topicService;
     @Autowired
     private UserTopicActionService userTopicActionService;
+    @Autowired
+    private TopicTopService topicTopService;
+    @Autowired
+    private TopicReplyService topicReplyService;
+    @Autowired
+    private TopicWarmChannelService topicWarmChannelService;
+    @Autowired
+    private TopicGiveLikeService topicGiveLikeService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Long insert(TopicDTO topicDTO) {
         topicService.save(topicDTO);
-        UserTopicAction action = UserTopicAction.getInstance(topicDTO.getId(), UserUtil.getUserId(), "PUBLISH");
+        UserTopicAction action = UserTopicAction.getInstance(topicDTO.getId(), topicDTO.getUserId(), "PUBLISH");
         userTopicActionService.save(action);
         topicDetailService.save(TopicDetail.getInstance(topicDTO.getId(), topicDTO.getContent()));
         return topicDTO.getId();
@@ -44,6 +60,36 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic> implements
         BeanUtil.copyProperties(topic, topicDTO);
         topicDTO.setDetailId(detail.getId());
         topicDTO.setContent(detail.getContent());
+        topicDTO.setBelongType(BelongType.valueOf(topicDTO.getBelongType()).getType());
+        UserTopicAction userTopicAction = userTopicActionService.getOne(Wrappers.<UserTopicAction>lambdaQuery()
+                .eq(UserTopicAction::getTopicId, id)
+                .eq(UserTopicAction::getUserId, topic.getUserId()));
+        topicDTO.setCollectionId(userTopicAction == null ? null : userTopicAction.getId());
+        TopicTop topicTop = topicTopService.getOne(Wrappers.<TopicTop>lambdaQuery()
+                .eq(TopicTop::getTopicId, id));
+        topicDTO.setTopId(topicTop == null ? null : topicTop.getId());
         return topicDTO;
     }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean delete(Long topicId) {
+        if (topicService.removeById(topicId)
+                && topicDetailService.remove(Wrappers.<TopicDetail>lambdaQuery()
+                .eq(TopicDetail::getTopicId, topicId))
+                && topicTopService.remove(Wrappers.<TopicTop>lambdaQuery()
+                .eq(TopicTop::getTopicId, topicId))
+                && userTopicActionService.remove(Wrappers.<UserTopicAction>lambdaQuery()
+                .eq(UserTopicAction::getTopicId, topicId))
+                && topicReplyService.remove(Wrappers.<TopicReply>lambdaQuery()
+                .eq(TopicReply::getTopicId, topicId))
+                && topicWarmChannelService.remove(Wrappers.<TopicWarmChannel>lambdaQuery()
+                .eq(TopicWarmChannel::getTopicId, topicId))
+                && topicGiveLikeService.remove(Wrappers.<TopicGiveLike>lambdaQuery()
+                .eq(TopicGiveLike::getTopicId, topicId))) {
+            return true;
+        }
+        return false;
+    }
+
 }

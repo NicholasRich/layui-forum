@@ -5,4 +5,7 @@
     var preUrl = [[${#httpServletRequest.getContextPath()}]];
   </script>
 </th:block>
+<th:block th:fragment="context">
+  <input type="hidden" th:value="${#httpServletRequest.getContextPath()}">
+</th:block>
 </html>

@@ -104,20 +104,20 @@ layui.define('fly', function (exports) {
 
     //收藏
     , collect: function (div) {
-      var othis = $(this), type = othis.data('type');
-      $.post(preUrl + '/collection/' + type + '/', {cid: div.data('cid'), topicId: div.data('id')}, function (res) {
-        if (res.status === 0) {
-          if (type === 'add') {
-            $('#LAY_jieAdmin').attr('data-cid', res.data);
-            othis.data('type', 'remove').html('取消收藏').addClass('layui-btn-danger');
-          } else if (type === 'remove') {
-            othis.data('type', 'add').html('收藏').removeClass('layui-btn-danger');
-          }
-          layer.msg(res.msg, {icon: 1});
-        } else {
-          layer.alert(res.msg, {icon: 2, shift: 6});
-        }
-      });
+      // var othis = $(this), type = othis.data('type');
+      // $.post(preUrl + '/collection/' + type + '/', {cid: div.data('cid'), topicId: div.data('id')}, function (res) {
+      //   if (res.status === 0) {
+      //     if (type === 'add') {
+      //       $('#LAY_jieAdmin').attr('data-cid', res.data);
+      //       othis.data('type', 'remove').html('取消收藏').addClass('layui-btn-danger');
+      //     } else if (type === 'remove') {
+      //       othis.data('type', 'add').html('收藏').removeClass('layui-btn-danger');
+      //     }
+      //     layer.msg(res.msg, {icon: 1});
+      //   } else {
+      //     layer.alert(res.msg, {icon: 2, shift: 6});
+      //   }
+      // });
       // fly.json(preUrl + '/collection/' + type + '/', {
       //   cid: div.data('cid')
       // }, function (res) {
@@ -136,20 +136,20 @@ layui.define('fly', function (exports) {
   });
 
   //异步渲染
-  var asyncRender = function () {
-    var div = $('.fly-admin-box'), jieAdmin = $('#LAY_jieAdmin');
-    //查询帖子是否收藏
-    if (jieAdmin[0]) {
-      fly.json(preUrl + '/collection/find/', {
-        topicId: div.data('id')
-      }, function (res) {
-        if (res.data) {
-          jieAdmin.attr('data-cid', res.data);
-        }
-        jieAdmin.append('<span class="layui-btn layui-btn-xs jie-admin ' + (res.data ? 'layui-btn-danger' : '') + '" type="collect" data-type="' + (res.data ? 'remove' : 'add') + '">' + (res.data ? '取消收藏' : '收藏') + '</span>');
-      }, {type: 'get'});
-    }
-  }();
+  // var asyncRender = function () {
+  //   var div = $('.fly-admin-box'), jieAdmin = $('#LAY_jieAdmin');
+  //   //查询帖子是否收藏
+  //   if (jieAdmin[0]) {
+  //     fly.json(preUrl + '/collection/find/', {
+  //       topicId: div.data('id')
+  //     }, function (res) {
+  //       if (res.data) {
+  //         jieAdmin.attr('data-cid', res.data);
+  //       }
+  //       jieAdmin.append('<span class="layui-btn layui-btn-xs jie-admin ' + (res.data ? 'layui-btn-danger' : '') + '" type="collect" data-type="' + (res.data ? 'remove' : 'add') + '">' + (res.data ? '取消收藏' : '收藏') + '</span>');
+  //     }, {type: 'get'});
+  //   }
+  // }();
 
   //解答操作
   gather.jiedaActive = {
