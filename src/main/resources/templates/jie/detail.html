@@ -367,6 +367,7 @@
     var page = [[${page}]];
     var topicType = null;
 
+    loadReply(1);
     var badgeTemplate = $($('#badgeTemplate').html());
     $('.jie-admin', badgeTemplate).each(function (index, ele) {
       $(this).attr('href', preUrl + $(this).attr('href'));
@@ -499,52 +500,43 @@
     }, 'json');
 
     //加载分页
-    $.get(preUrl + '/topicReply/count', {topicId: topicId}, function (res) {
-      if (res.status === 0) {
-        $('i[title="回答"]').after(res.data);
-        laypage.render({
-          elem: 'replyPage',
-          curr: page,
-          count: res.data,
-          jump: function (obj, first) {
-            page = obj.curr;
+    function loadPage(count, curr) {
+      laypage.render({
+        elem: 'replyPage',
+        curr: curr,
+        count: count,
+        jump: function (obj, first) {
+          if (!first) {
             loadReply(obj.curr);
-            if (!first) {
-              $('html').scrollTop($('#pagePoint').offset().top - 100);
-            }
+            $(window).scrollTop($('#pagePoint').offset().top - 100);
           }
-        });
-      } else {
-        layer.alert(res.msg, {icon: 2, shift: 6});
-      }
-    }, 'json');
+        }
+      });
+    }
 
     //  加载回复
-    function loadReply(page) {
-      $.get(preUrl + '/topicReply/replyPage', {page: page, topicId: topicId}, function (res) {
-        if (res.status === 0) {
-          var list = res.data;
-          if (list.length > 0) {
-            $('#jieda').html('');
-            $.each(list, function (index, obj) {
-              var reply = $($('#replyTemplate').html());
-              $('.jieda-body', reply).attr('replyId', obj.id);
-              $('.jieda-body', reply).html(fly.content(obj.replyContent));
-              $('#replyTime', reply).html(obj.createTime);
-              if (obj.adoption != 'ADOPTION') {
-                $('.icon-caina', reply).remove();
-              }
-              if (obj.userId != $('#userId').val() || obj.adoption === 'ADOPTION') {
-                $('.replyDel', reply).remove();
-              }
-              $('#jieda').append(reply);
-            });
-            if (topicType === 'FINISH') {
-              $('.jieda-accept').remove();
+    function loadReply(curr) {
+      $.get(preUrl + '/topicReply/replyPage', {page: curr, topicId: topicId}, function (res) {
+        if (res.data.records) {
+          $('#jieda').empty();
+          page = curr;
+          loadPage(res.data.total, res.data.current);
+          $.each(res.data.records, function (index, obj) {
+            var reply = $($('#replyTemplate').html());
+            $('.jieda-body', reply).attr('replyId', obj.id);
+            $('.jieda-body', reply).html(fly.content(obj.replyContent));
+            $('#replyTime', reply).html(obj.createTime);
+            if (obj.adoption != 'ADOPTION') {
+              $('.icon-caina', reply).remove();
             }
+            if (obj.userId != $('#userId').val() || obj.adoption === 'ADOPTION') {
+              $('.replyDel', reply).remove();
+            }
+            $('#jieda').append(reply);
+          });
+          if (topicType === 'FINISH') {
+            $('.jieda-accept').remove();
           }
-        } else {
-          layer.alert(res.msg, {icon: 2, shift: 6});
         }
       }, 'json');
     }

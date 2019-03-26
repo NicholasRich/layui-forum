@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -25,21 +24,24 @@ public class TopicReplyServiceImpl extends ServiceImpl<TopicReplyMapper, TopicRe
     private TopicService topicService;
 
     @Override
-    public List<TopicReply> getReplyPage(Long topicId, Long page) {
-        List<TopicReply> list = new ArrayList<>();
+    public IPage<TopicReply> getReplyPage(Long topicId, Long page) {
+        IPage<TopicReply> iPage = topicReplyService.page(new Page<>(page, 10), Wrappers.<TopicReply>lambdaQuery()
+                .eq(TopicReply::getTopicId, topicId)
+                .eq(TopicReply::getAdoption, "NOADOPTION"));
         if (page <= 1) {
             TopicReply adoption = topicReplyService.getOne(Wrappers.<TopicReply>lambdaQuery()
                     .eq(TopicReply::getTopicId, topicId)
                     .eq(TopicReply::getAdoption, "ADOPTION"));
             if (adoption != null) {
-                list.add(adoption);
+                List<TopicReply> records = iPage.getRecords();
+                if (records.size() > 0) {
+                    records.remove(records.size() - 1);
+                }
+                records.add(0, adoption);
+                iPage.setRecords(records);
             }
         }
-        IPage<TopicReply> iPage = topicReplyService.page(new Page<>(page, 10), Wrappers.<TopicReply>lambdaQuery()
-                .eq(TopicReply::getTopicId, topicId)
-                .eq(TopicReply::getAdoption, "NOADOPTION"));
-        list.addAll(iPage.getRecords());
-        return list;
+        return iPage;
     }
 
     @Override

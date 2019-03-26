@@ -1,6 +1,7 @@
 package com.ylzinfo.forum.controller;
 
 import cn.hutool.core.util.NumberUtil;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.ylzinfo.forum.dto.ResultDTO;
 import com.ylzinfo.forum.entity.TopicReply;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 @Controller
 @RequestMapping("topicReply")
@@ -40,15 +40,8 @@ public class TopicReplyController {
 
     @GetMapping("replyPage")
     @ResponseBody
-    public ResultDTO<List<TopicReply>> replyPage(Long topicId, Long page) {
-        return new ResultDTO<List<TopicReply>>().dataSuccess(topicReplyService.getReplyPage(topicId, page));
-    }
-
-    @GetMapping("count")
-    @ResponseBody
-    public ResultDTO<Integer> count(Long topicId) {
-        return new ResultDTO<Integer>().dataSuccess(topicReplyService.count(Wrappers.<TopicReply>lambdaQuery()
-                .eq(TopicReply::getTopicId, topicId)));
+    public ResultDTO<IPage<TopicReply>> replyPage(Long topicId, Long page) {
+        return new ResultDTO<IPage<TopicReply>>().dataSuccess(topicReplyService.getReplyPage(topicId, page));
     }
 
     @PostMapping("adoption")
