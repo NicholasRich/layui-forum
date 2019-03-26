@@ -8,6 +8,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 import java.io.Serializable;
+import java.util.Date;
 
 @Data
 @RequiredArgsConstructor(staticName = "getInstance")
@@ -21,4 +22,5 @@ public class UserTopicAction implements Serializable {
     private String userId;
     @NonNull
     private String userTopicType;
+    private Date createTime;
 }

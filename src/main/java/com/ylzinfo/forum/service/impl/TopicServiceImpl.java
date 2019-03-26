@@ -1,7 +1,9 @@
 package com.ylzinfo.forum.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ylzinfo.forum.dto.TopicDTO;
 import com.ylzinfo.forum.entity.Topic;
@@ -24,6 +26,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Map;
+
 @Service
 public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic> implements TopicService {
     @Autowired
@@ -40,6 +45,8 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic> implements
     private TopicWarmChannelService topicWarmChannelService;
     @Autowired
     private TopicGiveLikeService topicGiveLikeService;
+    @Autowired
+    private TopicMapper topicMapper;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -63,6 +70,7 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic> implements
         topicDTO.setBelongType(BelongType.valueOf(topicDTO.getBelongType()).getType());
         UserTopicAction userTopicAction = userTopicActionService.getOne(Wrappers.<UserTopicAction>lambdaQuery()
                 .eq(UserTopicAction::getTopicId, id)
+                .eq(UserTopicAction::getUserTopicType, "COLLECTION")
                 .eq(UserTopicAction::getUserId, topic.getUserId()));
         topicDTO.setCollectionId(userTopicAction == null ? null : userTopicAction.getId());
         TopicTop topicTop = topicTopService.getOne(Wrappers.<TopicTop>lambdaQuery()
@@ -74,7 +82,7 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic> implements
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean delete(Long topicId) {
-        if (topicService.removeById(topicId)
+        return topicService.removeById(topicId)
                 && topicDetailService.remove(Wrappers.<TopicDetail>lambdaQuery()
                 .eq(TopicDetail::getTopicId, topicId))
                 && topicTopService.remove(Wrappers.<TopicTop>lambdaQuery()
@@ -86,10 +94,22 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic> implements
                 && topicWarmChannelService.remove(Wrappers.<TopicWarmChannel>lambdaQuery()
                 .eq(TopicWarmChannel::getTopicId, topicId))
                 && topicGiveLikeService.remove(Wrappers.<TopicGiveLike>lambdaQuery()
-                .eq(TopicGiveLike::getTopicId, topicId))) {
-            return true;
-        }
-        return false;
+                .eq(TopicGiveLike::getTopicId, topicId));
+    }
+
+    @Override
+    public IPage<Topic> getPublish(String userId, Long page) {
+        return topicMapper.getPublish(new Page(page, 10), userId);
+    }
+
+    @Override
+    public IPage<Topic> getCollection(String userId, Long page) {
+        return topicMapper.getCollection(new Page(page, 10), userId);
+    }
+
+    @Override
+    public List<Map<String, Object>> getTopicCount(String userId) {
+        return topicMapper.getPublishAndCollectionCount(userId);
     }
 
 }

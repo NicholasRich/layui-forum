@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ylzinfo.forum.mapper.TopicMapper">
+
+  <select id="getPublish" resultType="com.ylzinfo.forum.entity.Topic">
+    select a.id, a.title, a.update_time, a.topic_type, count(b.id) replyNum
+    from cm_topic a
+        left join pm_topic_reply b on a.id = b.topic_id
+    where a.user_id = #{userId}
+    group by a.id
+    order by update_time desc
+  </select>
+  <select id="getPublishAndCollectionCount" resultType="java.util.Map">
+    select user_topic_type userTopicType, count(0) count
+    from rl_user_topic_action
+    where user_id = #{userId}
+    group by user_topic_type
+  </select>
+  <select id="getCollection" resultType="com.ylzinfo.forum.entity.Topic">
+    select title, b.create_time, topic_id id
+    from cm_topic a
+           left join rl_user_topic_action b on a.id = b.topic_id
+    where user_topic_type = 'COLLECTION'
+      and b.user_id = #{userId}
+  </select>
+</mapper>

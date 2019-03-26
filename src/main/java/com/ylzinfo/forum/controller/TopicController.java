@@ -1,5 +1,6 @@
 package com.ylzinfo.forum.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.ylzinfo.forum.dto.ResultDTO;
 import com.ylzinfo.forum.dto.TopicDTO;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("topic")
@@ -41,7 +44,7 @@ public class TopicController {
         topicDTO.setUserId(UserUtil.getUserId());
         Long id = topicService.insert(topicDTO);
         if (id != null) {
-            return new ResultDTO().actionSuccess(request.getContextPath() + "/topic/detail?page=0&id=" + id);
+            return new ResultDTO().actionSuccess(request.getContextPath() + "/topic/detail/" + id + "/0");
         }
         return new ResultDTO().fail("发帖失败");
     }
@@ -51,8 +54,8 @@ public class TopicController {
         return "jie/add";
     }
 
-    @GetMapping("detail")
-    public String detail(Model model, Long id, Long page) {
+    @GetMapping("detail/{id}/{page}")
+    public String detail(Model model, @PathVariable Long id, @PathVariable Long page) {
         model.addAttribute("id", id);
         model.addAttribute("page", page);
         return "jie/detail";
@@ -102,5 +105,23 @@ public class TopicController {
         } else {
             return new ResultDTO().fail("取消失败");
         }
+    }
+
+    @GetMapping("getPublish")
+    @ResponseBody
+    public ResultDTO<IPage<Topic>> getPublish(String userId, Long page) {
+        return new ResultDTO<IPage<Topic>>().dataSuccess(topicService.getPublish(userId, page));
+    }
+
+    @GetMapping("getTopicCount")
+    @ResponseBody
+    public ResultDTO<List<Map<String, Object>>> getTopicCount(String userId) {
+        return new ResultDTO<List<Map<String, Object>>>().dataSuccess(topicService.getTopicCount(userId));
+    }
+
+    @GetMapping("getCollection")
+    @ResponseBody
+    public ResultDTO<IPage<Topic>> getCollection(String userId, Long page) {
+        return new ResultDTO<IPage<Topic>>().dataSuccess(topicService.getCollection(userId, page));
     }
 }

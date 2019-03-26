@@ -11,7 +11,6 @@
   <properties>
     <java.version>1.8</java.version>
     <mybatis-plus.version>3.1.0</mybatis-plus.version>
-    <nekohtml.version>1.9.22</nekohtml.version>
     <hutool.version>4.5.0</hutool.version>
   </properties>
   <dependencyManagement>
@@ -34,8 +33,12 @@
     <dependency>
       <groupId>net.sourceforge.nekohtml</groupId>
       <artifactId>nekohtml</artifactId>
-      <version>${nekohtml.version}</version>
     </dependency>
+    <!--<dependency>-->
+    <!--<groupId>com.oracle</groupId>-->
+    <!--<artifactId>ojdbc6</artifactId>-->
+    <!--<version>11.2.0.3</version>-->
+    <!--</dependency>-->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
@@ -73,6 +76,14 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
         <version>2.0.8.RELEASE</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+        </configuration>
       </plugin>
     </plugins>
   </build>

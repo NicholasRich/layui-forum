@@ -35,7 +35,7 @@ public class TopicReplyController {
         int count = topicReplyService.count(Wrappers.<TopicReply>lambdaQuery()
                 .eq(TopicReply::getTopicId, id));
         int page = NumberUtil.partValue(count, 10);
-        return new ResultDTO().actionSuccess(request.getContextPath() + "/topic/detail?id=" + id + "&page=" + page);
+        return new ResultDTO().actionSuccess(request.getContextPath() + "/topic/detail/" + id + "/" + page);
     }
 
     @GetMapping("replyPage")
@@ -55,9 +55,18 @@ public class TopicReplyController {
     @ResponseBody
     public ResultDTO adoption(TopicReply topicReply) {
         if (topicReplyService.adoption(topicReply)) {
-            return new ResultDTO().actionSuccess(request.getContextPath() + "/topic/detail?page=0&id=" + topicReply.getTopicId());
+            return new ResultDTO().actionSuccess(request.getContextPath() + "/topic/detail/" + topicReply.getTopicId() + "/0");
         } else {
             return new ResultDTO().fail("采纳失败");
         }
+    }
+
+    @PostMapping("delete")
+    @ResponseBody
+    public ResultDTO delete(Long id) {
+        if (topicReplyService.removeById(id)) {
+            return new ResultDTO().success("删除成功");
+        }
+        return new ResultDTO().fail("删除失败");
     }
 }

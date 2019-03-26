@@ -1,6 +1,7 @@
 package com.ylzinfo.forum.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -29,4 +30,7 @@ public class Topic implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
     private Date endTime;
     private String version;
+
+    @TableField(exist = false)
+    private Integer replyNum;
 }
