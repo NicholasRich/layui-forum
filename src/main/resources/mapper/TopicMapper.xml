@@ -23,4 +23,12 @@
     where user_topic_type = 'COLLECTION'
       and b.user_id = #{userId}
   </select>
+  <select id="getDetail" resultType="com.ylzinfo.forum.entity.Topic">
+    select a.*, b.id detailId, b.content, c.id topId, d.id collectionId
+    from cm_topic a
+           left join pm_topic_detail b on a.id = b.topic_id
+           left join rl_topic_top c on a.id = c.topic_id
+           left join (select * from rl_user_topic_action where user_id = #{userId} and user_topic_type = 'COLLECTION') d on a.id = d.topic_id
+    where a.id = #{id}
+  </select>
 </mapper>

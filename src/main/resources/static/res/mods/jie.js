@@ -29,7 +29,7 @@ layui.define('fly', function (exports) {
       , time: 10000
     };
     elemQuiz.addClass('layui-hide');
-    if (value === 'QUESTION') {
+    if (value === '提问') {
       layer.tips('下面的信息将便于您获得更好的答案', obj.othis, tips);
       elemQuiz.removeClass('layui-hide');
     } else if (value === '99') {

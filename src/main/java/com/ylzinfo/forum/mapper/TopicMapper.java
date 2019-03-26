@@ -15,4 +15,6 @@ public interface TopicMapper extends BaseMapper<Topic> {
     List<Map<String, Object>> getPublishAndCollectionCount(@Param("userId") String userId);
 
     IPage<Topic> getCollection(Page page, @Param("userId") String userId);
+
+    Topic getDetail(@Param("id") Long id, @Param("userId") String userId);
 }

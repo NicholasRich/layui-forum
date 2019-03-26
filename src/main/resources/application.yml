@@ -5,6 +5,7 @@ mybatis-plus:
   global-config:
     refresh: true
   mapper-locations: classpath:mapper/*
+  type-enums-package: com.ylzinfo.forum.enums
 spring:
   datasource:
     url: jdbc:mysql://192.168.56.130:3306/info-platform?useSSL=false&allowPublicKeyRetrieval=true

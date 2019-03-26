@@ -2,16 +2,15 @@ package com.ylzinfo.forum.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.ylzinfo.forum.dto.TopicDTO;
 import com.ylzinfo.forum.entity.Topic;
 
 import java.util.List;
 import java.util.Map;
 
 public interface TopicService extends IService<Topic> {
-    Long insert(TopicDTO topicDTO);
+    Long insert(Topic topic);
 
-    TopicDTO getDetail(Long id);
+    Topic getDetail(Long id, String userId);
 
     boolean delete(Long topicId);
 

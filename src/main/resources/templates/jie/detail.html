@@ -377,43 +377,42 @@
     function badgeHandler(data) {
       $('#belongType').html(data.belongType);
       if (data.userId === $('#userId').val() || data.userId === 'admin') {
-        $('.fly-admin-box').append($('#topicDel', badgeTemplate).prop('outerHTML'));
+        $('.fly-admin-box').append($('#topicDel', badgeTemplate).prop('outerHTML') + ' ');
       }
-      $('.fly-admin-box').append(' ');
       topicType = data.topicType;
       if (data.topicType === 'FINISH') {
         $('#finish').show();
       } else {
         if (data.userId === $('#userId').val()) {
-          $('#LAY_jieAdmin').append($('#edit', badgeTemplate).prop('outerHTML'));
+          $('#LAY_jieAdmin').append($('#edit', badgeTemplate).prop('outerHTML') + ' ');
         }
         $('#noFinish').show();
       }
-      if (data.topId) {
-        $('#top').show();
-        if (data.userId === 'admin') {
-          $('.fly-admin-box').append($('#cancelTop', badgeTemplate).prop('outerHTML'));
+      if (data.userId)
+        if (data.topId) {
+          $('#top').show();
+          if (data.userId === 'admin') {
+            $('.fly-admin-box').append($('#cancelTop', badgeTemplate).prop('outerHTML') + ' ');
+          }
+        } else {
+          if (data.userId === 'admin') {
+            $('.fly-admin-box').append($('#doTop', badgeTemplate).prop('outerHTML') + ' ');
+          }
         }
-      } else {
-        if (data.userId === 'admin') {
-          $('.fly-admin-box').append($('#doTop', badgeTemplate).prop('outerHTML'));
-        }
-      }
-      $('.fly-admin-box').append(' ');
       if (data.marrow === 'NOMARROW') {
         if (data.userId === 'admin') {
-          $('.fly-admin-box').append($('#doMarrow', badgeTemplate).prop('outerHTML'));
+          $('.fly-admin-box').append($('#doMarrow', badgeTemplate).prop('outerHTML') + ' ');
         }
       } else {
         $('#marrow').show();
         if (data.userId === 'admin') {
-          $('.fly-admin-box').append($('#cancelMarrow', badgeTemplate).prop('outerHTML'));
+          $('.fly-admin-box').append($('#cancelMarrow', badgeTemplate).prop('outerHTML') + ' ');
         }
       }
       if (data.collectionId) {
-        $('#LAY_jieAdmin').append($('#cancelCollection', badgeTemplate).prop('outerHTML'));
+        $('#LAY_jieAdmin').append($('#cancelCollection', badgeTemplate).prop('outerHTML') + ' ');
       } else {
-        $('#LAY_jieAdmin').append($('#collection', badgeTemplate).prop('outerHTML'));
+        $('#LAY_jieAdmin').append($('#collection', badgeTemplate).prop('outerHTML') + ' ');
       }
     }
 
@@ -487,7 +486,7 @@
     }
 
     //加载帖子内容
-    $.get(preUrl + '/topic/content', {id: topicId}, function (res) {
+    $.get(preUrl + '/topic/content', {id: topicId, userId: $('#userId').val()}, function (res) {
       if (res.status === 0) {
         $('#topic').html(res.data.title);
         $('#updateTime').html(res.data.updateTime);

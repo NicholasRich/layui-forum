@@ -3,7 +3,6 @@ package com.ylzinfo.forum.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.ylzinfo.forum.dto.ResultDTO;
-import com.ylzinfo.forum.dto.TopicDTO;
 import com.ylzinfo.forum.entity.Topic;
 import com.ylzinfo.forum.service.TopicService;
 import com.ylzinfo.forum.util.UploadUtil;
@@ -40,11 +39,11 @@ public class TopicController {
 
     @PostMapping("insert")
     @ResponseBody
-    public ResultDTO insert(TopicDTO topicDTO) {
-        topicDTO.setUserId(UserUtil.getUserId());
-        Long id = topicService.insert(topicDTO);
+    public ResultDTO insert(Topic topic) {
+        topic.setUserId(UserUtil.getUserId());
+        Long id = topicService.insert(topic);
         if (id != null) {
-            return new ResultDTO().actionSuccess(request.getContextPath() + "/topic/detail/" + id + "/0");
+            return new ResultDTO().actionSuccess(request.getContextPath() + "/topic/detail/" + id + "/1");
         }
         return new ResultDTO().fail("发帖失败");
     }
@@ -63,8 +62,8 @@ public class TopicController {
 
     @GetMapping("content")
     @ResponseBody
-    public ResultDTO<TopicDTO> content(Long id) {
-        return new ResultDTO<TopicDTO>().dataSuccess(topicService.getDetail(id));
+    public ResultDTO<Topic> content(Long id, String userId) {
+        return new ResultDTO<Topic>().dataSuccess(topicService.getDetail(id, userId));
     }
 
     @PostMapping("image/upload")

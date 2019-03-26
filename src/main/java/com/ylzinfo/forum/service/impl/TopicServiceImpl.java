@@ -1,11 +1,9 @@
 package com.ylzinfo.forum.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.ylzinfo.forum.dto.TopicDTO;
 import com.ylzinfo.forum.entity.Topic;
 import com.ylzinfo.forum.entity.TopicDetail;
 import com.ylzinfo.forum.entity.TopicGiveLike;
@@ -13,7 +11,6 @@ import com.ylzinfo.forum.entity.TopicReply;
 import com.ylzinfo.forum.entity.TopicTop;
 import com.ylzinfo.forum.entity.TopicWarmChannel;
 import com.ylzinfo.forum.entity.UserTopicAction;
-import com.ylzinfo.forum.enums.BelongType;
 import com.ylzinfo.forum.mapper.TopicMapper;
 import com.ylzinfo.forum.service.TopicDetailService;
 import com.ylzinfo.forum.service.TopicGiveLikeService;
@@ -50,33 +47,17 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic> implements
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Long insert(TopicDTO topicDTO) {
-        topicService.save(topicDTO);
-        UserTopicAction action = UserTopicAction.getInstance(topicDTO.getId(), topicDTO.getUserId(), "PUBLISH");
+    public Long insert(Topic topic) {
+        topicService.save(topic);
+        UserTopicAction action = UserTopicAction.getInstance(topic.getId(), topic.getUserId(), "PUBLISH");
         userTopicActionService.save(action);
-        topicDetailService.save(TopicDetail.getInstance(topicDTO.getId(), topicDTO.getContent()));
-        return topicDTO.getId();
+        topicDetailService.save(TopicDetail.getInstance(topic.getId(), topic.getContent()));
+        return topic.getId();
     }
 
     @Override
-    public TopicDTO getDetail(Long id) {
-        Topic topic = topicService.getById(id);
-        TopicDetail detail = topicDetailService.getOne(Wrappers.<TopicDetail>lambdaQuery()
-                .eq(TopicDetail::getTopicId, id));
-        TopicDTO topicDTO = new TopicDTO();
-        BeanUtil.copyProperties(topic, topicDTO);
-        topicDTO.setDetailId(detail.getId());
-        topicDTO.setContent(detail.getContent());
-        topicDTO.setBelongType(BelongType.valueOf(topicDTO.getBelongType()).getType());
-        UserTopicAction userTopicAction = userTopicActionService.getOne(Wrappers.<UserTopicAction>lambdaQuery()
-                .eq(UserTopicAction::getTopicId, id)
-                .eq(UserTopicAction::getUserTopicType, "COLLECTION")
-                .eq(UserTopicAction::getUserId, topic.getUserId()));
-        topicDTO.setCollectionId(userTopicAction == null ? null : userTopicAction.getId());
-        TopicTop topicTop = topicTopService.getOne(Wrappers.<TopicTop>lambdaQuery()
-                .eq(TopicTop::getTopicId, id));
-        topicDTO.setTopId(topicTop == null ? null : topicTop.getId());
-        return topicDTO;
+    public Topic getDetail(Long id, String userId) {
+        return topicMapper.getDetail(id, userId);
     }
 
     @Override

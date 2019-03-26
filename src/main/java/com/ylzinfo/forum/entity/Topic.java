@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.ylzinfo.forum.enums.BelongTypeEnum;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -18,7 +19,7 @@ public class Topic implements Serializable {
     private String userId;
     private String title;
     private String specialColumn;
-    private String belongType;
+    private BelongTypeEnum belongType;
     private String belongProduct;
     private Long fileId;
     private String topicType;
@@ -33,4 +34,12 @@ public class Topic implements Serializable {
 
     @TableField(exist = false)
     private Integer replyNum;
+    @TableField(exist = false)
+    private Long detailId;
+    @TableField(exist = false)
+    private String content;
+    @TableField(exist = false)
+    private Long topId;
+    @TableField(exist = false)
+    private Long collectionId;
 }
