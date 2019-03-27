@@ -1,12 +1,11 @@
 package com.ylzinfo.forum.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.ylzinfo.forum.dto.TopicDTO;
 import com.ylzinfo.forum.entity.Topic;
 import com.ylzinfo.forum.entity.TopicDetail;
 import com.ylzinfo.forum.mapper.TopicDetailMapper;
+import com.ylzinfo.forum.mapper.TopicMapper;
 import com.ylzinfo.forum.service.TopicDetailService;
 import com.ylzinfo.forum.service.TopicService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,31 +20,21 @@ public class TopicDetailServiceImpl extends ServiceImpl<TopicDetailMapper, Topic
     private TopicService topicService;
     @Autowired
     private TopicDetailService topicDetailService;
+    @Autowired
+    private TopicMapper topicMapper;
 
     @Override
-    public TopicDTO getContent(Long id) {
-        Topic topic = topicService.getById(id);
-        if (topic == null) {
-            return null;
-        }
-        TopicDetail topicDetail = topicDetailService.getOne(Wrappers.<TopicDetail>lambdaQuery()
-                .eq(TopicDetail::getTopicId, id));
-        if (topicDetail == null) {
-            return null;
-        }
-        TopicDTO topicDTO = new TopicDTO();
-        BeanUtil.copyProperties(topic, topicDTO);
-        BeanUtil.copyProperties(topicDetail, topicDTO);
-        return topicDTO;
+    public Topic getContent(Long id) {
+        return topicMapper.getContent(id);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean updateTopic(TopicDTO topicDTO) {
-        topicDTO.setUpdateTime(new Date());
-        return topicService.updateById(topicDTO)
+    public boolean updateTopic(Topic topic) {
+        topic.setUpdateTime(new Date());
+        return topicService.updateById(topic)
                 && topicDetailService.update(Wrappers.<TopicDetail>lambdaUpdate()
-                .set(TopicDetail::getContent, topicDTO.getContent())
-                .eq(TopicDetail::getTopicId, topicDTO.getId()));
+                .set(TopicDetail::getContent, topic.getContent())
+                .eq(TopicDetail::getTopicId, topic.getId()));
     }
 }

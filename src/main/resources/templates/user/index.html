@@ -164,7 +164,7 @@
     var layPage = layui.laypage;
 
     //获取收藏和发帖数
-    $.get(preUrl + '/topic/getTopicCount', {userId: $('#userId').val()}, function (res) {
+    $.get(preUrl + '/topic/getTopicCount', {}, function (res) {
       if (res.data) {
         $.each(res.data, function (index, elem) {
           if (elem.userTopicType == 'PUBLISH') {
@@ -208,7 +208,7 @@
 
     //加载发帖
     function loadPublish(curr) {
-      $.get(preUrl + '/topic/getPublish', {userId: $('#userId').val(), page: curr}, function (res) {
+      $.get(preUrl + '/topic/getPublish', {page: curr}, function (res) {
         var list = res.data.records;
         if (list) {
           $('#publish').empty();
@@ -220,7 +220,7 @@
             title.html(elem.title);
             $('i', publishTemplate).html(elem.updateTime);
             $('em', publishTemplate).html(elem.replyNum + '回复');
-            title.attr('href', preUrl + title.attr('href') + '/' + elem.id + '/1');
+            title.attr('href', preUrl + title.attr('href') + '/' + elem.id);
             if (elem.topicType == 'FINISH') {
               edit.html("已结帖");
               edit.addClass('layui-btn-disabled');
@@ -238,7 +238,7 @@
 
     //  加载收藏
     function loadCollection(page) {
-      $.get(preUrl + '/topic/getCollection', {userId: $('#userId').val(), page: page}, function (res) {
+      $.get(preUrl + '/topic/getCollection', {page: page}, function (res) {
         var list = res.data.records;
         if (list) {
           $('#collectionContent').empty();

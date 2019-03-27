@@ -17,4 +17,6 @@ public interface TopicMapper extends BaseMapper<Topic> {
     IPage<Topic> getCollection(Page page, @Param("userId") String userId);
 
     Topic getDetail(@Param("id") Long id, @Param("userId") String userId);
+
+    Topic getContent(@Param("id")Long id);
 }

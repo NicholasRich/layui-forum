@@ -26,7 +26,7 @@ public class TopicReplyController {
 
     @PostMapping("insert")
     @ResponseBody
-    public ResultDTO insert(TopicReply topicReply) {
+    public ResultDTO<Integer> insert(TopicReply topicReply) {
         topicReply.setUserId(UserUtil.getUserId());
         if (!topicReplyService.save(topicReply)) {
             return new ResultDTO().fail("回复失败");
@@ -35,7 +35,7 @@ public class TopicReplyController {
         int count = topicReplyService.count(Wrappers.<TopicReply>lambdaQuery()
                 .eq(TopicReply::getTopicId, id));
         int page = NumberUtil.partValue(count, 10);
-        return new ResultDTO().actionSuccess(request.getContextPath() + "/topic/detail/" + id + "/" + page);
+        return new ResultDTO<Integer>().dataSuccess(page, "回复成功");
     }
 
     @GetMapping("replyPage")
@@ -48,7 +48,7 @@ public class TopicReplyController {
     @ResponseBody
     public ResultDTO adoption(TopicReply topicReply) {
         if (topicReplyService.adoption(topicReply)) {
-            return new ResultDTO().actionSuccess(request.getContextPath() + "/topic/detail/" + topicReply.getTopicId() + "/0");
+            return new ResultDTO().success("采纳成功");
         } else {
             return new ResultDTO().fail("采纳失败");
         }

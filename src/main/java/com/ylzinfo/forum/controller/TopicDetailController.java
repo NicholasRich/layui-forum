@@ -1,7 +1,7 @@
 package com.ylzinfo.forum.controller;
 
 import com.ylzinfo.forum.dto.ResultDTO;
-import com.ylzinfo.forum.dto.TopicDTO;
+import com.ylzinfo.forum.entity.Topic;
 import com.ylzinfo.forum.service.TopicDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -30,16 +30,16 @@ public class TopicDetailController {
 
     @GetMapping("getOne")
     @ResponseBody
-    public ResultDTO<TopicDTO> getOne(Long id) {
-        TopicDTO content = topicDetailService.getContent(id);
-        return new ResultDTO<TopicDTO>().dataSuccess(content);
+    public ResultDTO<Topic> getOne(Long id) {
+        Topic content = topicDetailService.getContent(id);
+        return new ResultDTO<Topic>().dataSuccess(content);
     }
 
     @PostMapping("update")
     @ResponseBody
-    private ResultDTO update(TopicDTO topicDTO) {
-        if (topicDetailService.updateTopic(topicDTO)) {
-            return new ResultDTO().actionSuccess(request.getContextPath() + "/topic/detail?id=" + topicDTO.getId());
+    private ResultDTO update(Topic topic) {
+        if (topicDetailService.updateTopic(topic)) {
+            return new ResultDTO().actionSuccess(request.getContextPath() + "/topic/detail/" + topic.getId());
         } else {
             return new ResultDTO().fail("编辑失败");
         }

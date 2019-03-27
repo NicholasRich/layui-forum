@@ -254,7 +254,7 @@
 <th:block th:include="/common/public::js"></th:block>
 <script type="text/html" id="badgeTemplate">
   <div>
-    <span class="layui-btn layui-btn-xs jie-admin" id="edit" href="/topicDetail/edit">编辑此贴</span>
+    <span class="layui-btn layui-btn-xs jie-admin" id="edit" href="/topicDetail/edit/">编辑此贴</span>
     <span class="layui-btn layui-btn-xs jie-admin" id="collection" href="/collection/insert">收藏</span>
     <span class="layui-btn layui-btn-xs jie-admin layui-btn-danger" id="cancelCollection" href="/collection/delete">取消收藏</span>
     <span class="layui-btn layui-btn-xs jie-admin" id="topicDel" href="/topic/delete">删除</span>
@@ -329,18 +329,19 @@
     var $ = layui.$,
         fly = layui.fly;
     var laypage = layui.laypage;
+    var form = layui.form;
     var topicId = [[${id}]];
     var page = [[${page}]];
     var topicType = null;
 
     //加载帖子内容
-    $.get(preUrl + '/topic/content', {id: topicId, userId: $('#userId').val()}, function (res) {
+    $.get(preUrl + '/topic/content', {id: topicId}, function (res) {
       if (res.status === 0) {
         $('#topic').html(res.data.title);
         $('#updateTime').html(res.data.updateTime);
         $('#content').html(fly.content(res.data.content));
         topicType = res.data.topicType;
-        loadReply(page);
+        loadReply(page == null ? 1 : page);
         photoHandler();
         badgeInit(res.data);
       } else {
@@ -348,12 +349,26 @@
       }
     }, 'json');
 
+    //提交回复
+    form.on('submit(*)', function (data) {
+      var i = layer.load(1, {shade: 0.3});
+      $.post($(data.form).attr('action'), data.field, function (res) {
+        if (res.status == 0) {
+          layer.msg(res.msg, {icon: 1});
+          loadReply(res.data);
+        } else {
+          layer.alert(res.msg, {icon: 2, anim: 6});
+        }
+        layer.close(i);
+      }, 'json');
+      return false;
+    });
 
     //徽章点击事件
     $('body').on('click', '.jie-admin', function () {
       var badge = $(this);
       if (badge.attr('id') === 'edit') {
-        location.href = badge.attr('href') + '?id=' + topicId;
+        location.href = preUrl + badge.attr('href') + topicId;
       } else if (badge.attr('id') === 'topicDel') {
         layer.confirm('确定要删除该帖吗？', {icon: 3}, function (index) {
           badgeClick(badge);
@@ -370,7 +385,11 @@
       layer.confirm('是否采纳该回答为最佳答案？', {icon: 3, anim: 5}, function (index) {
         $.post(preUrl + '/topicReply/adoption', {id: replyId, topicId: topicId}, function (res) {
           if (res.status === 0) {
-            location.href = res.action;
+            topicType = 'FINISH';
+            loadReply(1);
+            layer.msg(res.msg, {icon: 1});
+            $('#finish').show();
+            $('#noFinish').hide();
           } else {
             layer.alert(res.msg, {icon: 2, shift: 6});
           }
@@ -430,7 +449,7 @@
     }
 
     function badgeClick(badge) {
-      var i = layer.load(1);
+      var i = layer.load(1, {shade: 0.3});
       $.post(preUrl + badge.attr('href'), {topicId: topicId}, function (res) {
         if (res.status === 0) {
           var badgeTemplate = $($('#badgeTemplate').html());
@@ -498,7 +517,7 @@
     //  加载回复
     function loadReply(curr) {
       $.get(preUrl + '/topicReply/replyPage', {page: curr, topicId: topicId}, function (res) {
-        if (res.data.records) {
+        if (res.data.records.length > 0) {
           $('#jieda').empty();
           page = curr;
           loadPage(res.data.total, res.data.current);

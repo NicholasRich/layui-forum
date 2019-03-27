@@ -43,7 +43,7 @@ public class TopicController {
         topic.setUserId(UserUtil.getUserId());
         Long id = topicService.insert(topic);
         if (id != null) {
-            return new ResultDTO().actionSuccess(request.getContextPath() + "/topic/detail/" + id + "/1");
+            return new ResultDTO().actionSuccess(request.getContextPath() + "/topic/detail/" + id);
         }
         return new ResultDTO().fail("发帖失败");
     }
@@ -53,8 +53,8 @@ public class TopicController {
         return "jie/add";
     }
 
-    @GetMapping("detail/{id}/{page}")
-    public String detail(Model model, @PathVariable Long id, @PathVariable Long page) {
+    @GetMapping(value = {"detail/{id}/{page}", "detail/{id}"})
+    public String detail(Model model, @PathVariable Long id, @PathVariable(required = false) Long page) {
         model.addAttribute("id", id);
         model.addAttribute("page", page);
         return "jie/detail";
@@ -62,8 +62,8 @@ public class TopicController {
 
     @GetMapping("content")
     @ResponseBody
-    public ResultDTO<Topic> content(Long id, String userId) {
-        return new ResultDTO<Topic>().dataSuccess(topicService.getDetail(id, userId));
+    public ResultDTO<Topic> content(Long id) {
+        return new ResultDTO<Topic>().dataSuccess(topicService.getDetail(id, UserUtil.getUserId()));
     }
 
     @PostMapping("image/upload")
@@ -108,19 +108,19 @@ public class TopicController {
 
     @GetMapping("getPublish")
     @ResponseBody
-    public ResultDTO<IPage<Topic>> getPublish(String userId, Long page) {
-        return new ResultDTO<IPage<Topic>>().dataSuccess(topicService.getPublish(userId, page));
+    public ResultDTO<IPage<Topic>> getPublish(Long page) {
+        return new ResultDTO<IPage<Topic>>().dataSuccess(topicService.getPublish(UserUtil.getUserId(), page));
     }
 
     @GetMapping("getTopicCount")
     @ResponseBody
-    public ResultDTO<List<Map<String, Object>>> getTopicCount(String userId) {
-        return new ResultDTO<List<Map<String, Object>>>().dataSuccess(topicService.getTopicCount(userId));
+    public ResultDTO<List<Map<String, Object>>> getTopicCount() {
+        return new ResultDTO<List<Map<String, Object>>>().dataSuccess(topicService.getTopicCount(UserUtil.getUserId()));
     }
 
     @GetMapping("getCollection")
     @ResponseBody
-    public ResultDTO<IPage<Topic>> getCollection(String userId, Long page) {
-        return new ResultDTO<IPage<Topic>>().dataSuccess(topicService.getCollection(userId, page));
+    public ResultDTO<IPage<Topic>> getCollection(Long page) {
+        return new ResultDTO<IPage<Topic>>().dataSuccess(topicService.getCollection(UserUtil.getUserId(), page));
     }
 }

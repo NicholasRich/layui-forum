@@ -216,6 +216,18 @@
         }
       }, 'json')
     }
+    form.on('submit(*)', function (data) {
+      var i = layer.load(1, {shade: 0.3});
+      $.post($(data.form).attr('action'), data.field, function (res) {
+        if (res.status === 0) {
+          location.href = res.action;
+        } else {
+          layer.alert(res.msg, {icon: 2, shift: 6});
+        }
+        layer.close(i);
+      }, 'json');
+      return false;
+    });
   });
 </script>
 
