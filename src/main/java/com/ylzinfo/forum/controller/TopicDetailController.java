@@ -28,9 +28,9 @@ public class TopicDetailController {
         return "/jie/add";
     }
 
-    @GetMapping("getOne")
+    @GetMapping("getOne/{id}")
     @ResponseBody
-    public ResultDTO<Topic> getOne(Long id) {
+    public ResultDTO<Topic> getOne(@PathVariable Long id) {
         Topic content = topicDetailService.getContent(id);
         return new ResultDTO<Topic>().dataSuccess(content);
     }

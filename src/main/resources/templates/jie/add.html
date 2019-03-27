@@ -206,7 +206,7 @@
     if (id) {
       $('#desc').html('编辑帖子');
       $('#save').html('确认修改');
-      $.get(preUrl + '/topicDetail/getOne', {id: id}, function (res) {
+      $.get(preUrl + '/topicDetail/getOne/' + id, {}, function (res) {
         if (res.status === 0 && res.data) {
           form.val('form', res.data);
           $('.layui-this').click();
