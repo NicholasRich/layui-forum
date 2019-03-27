@@ -365,21 +365,44 @@
     var laypage = layui.laypage;
     var topicId = [[${id}]];
     var page = [[${page}]];
-    var topicType = null;
 
-    loadReply(1);
-    var badgeTemplate = $($('#badgeTemplate').html());
-    $('.jie-admin', badgeTemplate).each(function (index, ele) {
-      $(this).attr('href', preUrl + $(this).attr('href'));
+    //加载帖子内容
+    $.get(preUrl + '/topic/content', {id: topicId, userId: $('#userId').val()}, function (res) {
+      if (res.status === 0) {
+        $('#topic').html(res.data.title);
+        $('#updateTime').html(res.data.updateTime);
+        $('#content').html(fly.content(res.data.content));
+        photoHandler();
+        badgeInit(res.data);
+      } else {
+        layer.alert(res.msg, {icon: 2, shift: 6});
+      }
+    }, 'json');
+
+    loadReply(page);
+
+    //徽章点击事件
+    $('body').on('click', '.jie-admin', function () {
+      var badge = $(this);
+      if (badge.attr('id') === 'edit') {
+        location.href = badge.attr('href') + '?id=' + topicId;
+      } else if (badge.attr('id') === 'topicDel') {
+        layer.confirm('确定要删除该帖吗？', {icon: 3}, function (index) {
+          badgeClick(badge);
+          location.href = preUrl + '/jie/index';
+        });
+      } else {
+        badgeClick(badge);
+      }
     });
 
-    //头部小徽章处理
-    function badgeHandler(data) {
+    //头部小徽章初始化
+    function badgeInit(data) {
+      var badgeTemplate = $($('#badgeTemplate').html());
       $('#belongType').html(data.belongType);
       if (data.userId === $('#userId').val() || data.userId === 'admin') {
         $('.fly-admin-box').append($('#topicDel', badgeTemplate).prop('outerHTML') + ' ');
       }
-      topicType = data.topicType;
       if (data.topicType === 'FINISH') {
         $('#finish').show();
       } else {
@@ -388,26 +411,18 @@
         }
         $('#noFinish').show();
       }
-      if (data.userId)
+      if (data.userId == 'admin')
         if (data.topId) {
           $('#top').show();
-          if (data.userId === 'admin') {
-            $('.fly-admin-box').append($('#cancelTop', badgeTemplate).prop('outerHTML') + ' ');
-          }
+          $('.fly-admin-box').append($('#cancelTop', badgeTemplate).prop('outerHTML') + ' ');
         } else {
-          if (data.userId === 'admin') {
-            $('.fly-admin-box').append($('#doTop', badgeTemplate).prop('outerHTML') + ' ');
-          }
+          $('.fly-admin-box').append($('#doTop', badgeTemplate).prop('outerHTML') + ' ');
         }
       if (data.marrow === 'NOMARROW') {
-        if (data.userId === 'admin') {
-          $('.fly-admin-box').append($('#doMarrow', badgeTemplate).prop('outerHTML') + ' ');
-        }
+        $('.fly-admin-box').append($('#doMarrow', badgeTemplate).prop('outerHTML') + ' ');
       } else {
         $('#marrow').show();
-        if (data.userId === 'admin') {
-          $('.fly-admin-box').append($('#cancelMarrow', badgeTemplate).prop('outerHTML') + ' ');
-        }
+        $('.fly-admin-box').append($('#cancelMarrow', badgeTemplate).prop('outerHTML') + ' ');
       }
       if (data.collectionId) {
         $('#LAY_jieAdmin').append($('#cancelCollection', badgeTemplate).prop('outerHTML') + ' ');
@@ -416,59 +431,41 @@
       }
     }
 
-    //徽章点击事件
-    $('body').on('click', '.jie-admin', function () {
-      var badge = $(this);
-
-      function ajax(i) {
-        $.post(badge.attr('href'), {topicId: topicId}, function (res) {
-          if (res.status === 0) {
-            layer.msg(res.msg, {icon: 1});
-            switch (badge.attr('id')) {
-              case 'collection':
-                badge.replaceWith($('#cancelCollection', badgeTemplate).prop('outerHTML'));
-                break;
-              case 'cancelCollection':
-                badge.replaceWith($('#collection', badgeTemplate).prop('outerHTML'));
-                break;
-              case 'doTop':
-                badge.replaceWith($('#cancelTop', badgeTemplate).prop('outerHTML'));
-                $('#top').show();
-                break;
-              case 'cancelTop':
-                badge.replaceWith($('#doTop', badgeTemplate).prop('outerHTML'));
-                $('#top').hide();
-                break;
-              case 'doMarrow':
-                badge.replaceWith($('#cancelMarrow', badgeTemplate).prop('outerHTML'));
-                $('#marrow').show();
-                break;
-              case 'cancelMarrow':
-                badge.replaceWith($('#doMarrow', badgeTemplate).prop('outerHTML'));
-                $('#marrow').hide();
-            }
-          } else {
-            layer.alert(res.msg, {icon: 2, shift: 6});
+    function badgeClick(badge) {
+      var i = layer.load(1);
+      $.post(preUrl + badge.attr('href'), {topicId: topicId}, function (res) {
+        if (res.status === 0) {
+          var badgeTemplate = $($('#badgeTemplate').html());
+          layer.msg(res.msg, {icon: 1});
+          switch (badge.attr('id')) {
+            case 'collection':
+              badge.replaceWith($('#cancelCollection', badgeTemplate));
+              break;
+            case 'cancelCollection':
+              badge.replaceWith($('#collection', badgeTemplate));
+              break;
+            case 'doTop':
+              badge.replaceWith($('#cancelTop', badgeTemplate));
+              $('#top').show();
+              break;
+            case 'cancelTop':
+              badge.replaceWith($('#doTop', badgeTemplate));
+              $('#top').hide();
+              break;
+            case 'doMarrow':
+              badge.replaceWith($('#cancelMarrow', badgeTemplate));
+              $('#marrow').show();
+              break;
+            case 'cancelMarrow':
+              badge.replaceWith($('#doMarrow', badgeTemplate));
+              $('#marrow').hide();
           }
-          layer.close(i);
-        }, 'json');
-      }
-
-      if (badge.attr('id') === 'edit') {
-        location.href = badge.attr('href') + '?id=' + topicId;
-      }
-
-      if (badge.attr('id') === 'topicDel') {
-        layer.confirm('确定要删除该帖吗？', {icon: 3}, function (index) {
-          var i = layer.load(1);
-          ajax(i);
-          location.href = preUrl + '/jie/index';
-        });
-      } else {
-        var i = layer.load(1);
-        ajax(i);
-      }
-    });
+        } else {
+          layer.alert(res.msg, {icon: 2, shift: 6});
+        }
+        layer.close(i);
+      }, 'json');
+    }
 
     //相册处理
     function photoHandler() {
@@ -484,19 +481,6 @@
         });
       }
     }
-
-    //加载帖子内容
-    $.get(preUrl + '/topic/content', {id: topicId, userId: $('#userId').val()}, function (res) {
-      if (res.status === 0) {
-        $('#topic').html(res.data.title);
-        $('#updateTime').html(res.data.updateTime);
-        $('#content').html(fly.content(res.data.content));
-        photoHandler();
-        badgeHandler(res.data);
-      } else {
-        layer.alert(res.msg, {icon: 2, shift: 6});
-      }
-    }, 'json');
 
     //加载分页
     function loadPage(count, curr) {
@@ -527,15 +511,14 @@
             $('#replyTime', reply).html(obj.createTime);
             if (obj.adoption != 'ADOPTION') {
               $('.icon-caina', reply).remove();
+            } else {
+              $('.jieda-accept').remove();
             }
             if (obj.userId != $('#userId').val() || obj.adoption === 'ADOPTION') {
               $('.replyDel', reply).remove();
             }
             $('#jieda').append(reply);
           });
-          if (topicType === 'FINISH') {
-            $('.jieda-accept').remove();
-          }
         }
       }, 'json');
     }
