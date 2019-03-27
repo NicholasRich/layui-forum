@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
-import java.util.List;
 
 @Service
 public class TopicReplyServiceImpl extends ServiceImpl<TopicReplyMapper, TopicReply> implements TopicReplyService {
@@ -25,23 +24,9 @@ public class TopicReplyServiceImpl extends ServiceImpl<TopicReplyMapper, TopicRe
 
     @Override
     public IPage<TopicReply> getReplyPage(Long topicId, Long page) {
-        IPage<TopicReply> iPage = topicReplyService.page(new Page<>(page, 10), Wrappers.<TopicReply>lambdaQuery()
+        return topicReplyService.page(new Page<>(page, 10), Wrappers.<TopicReply>lambdaQuery()
                 .eq(TopicReply::getTopicId, topicId)
-                .eq(TopicReply::getAdoption, "NOADOPTION"));
-        if (page <= 1) {
-            TopicReply adoption = topicReplyService.getOne(Wrappers.<TopicReply>lambdaQuery()
-                    .eq(TopicReply::getTopicId, topicId)
-                    .eq(TopicReply::getAdoption, "ADOPTION"));
-            if (adoption != null) {
-                List<TopicReply> records = iPage.getRecords();
-                if (records.size() > 0) {
-                    records.remove(records.size() - 1);
-                }
-                records.add(0, adoption);
-                iPage.setRecords(records);
-            }
-        }
-        return iPage;
+                .orderByAsc(TopicReply::getAdoption));
     }
 
     @Override

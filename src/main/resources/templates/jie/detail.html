@@ -150,39 +150,6 @@
         </fieldset>
 
         <ul class="jieda" id="jieda">
-          <!--<li data-id="111">-->
-          <!--<a name="item-1111111111"></a>-->
-          <!--<div class="detail-about detail-about-reply">-->
-          <!--<a class="fly-avatar" href="">-->
-          <!--<img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt=" ">-->
-          <!--</a>-->
-          <!--<div class="fly-detail-user">-->
-          <!--<a href="" class="fly-link">-->
-          <!--<cite>贤心</cite>-->
-          <!--</a>-->
-          <!--</div>-->
-          <!--<div class="detail-hits">-->
-          <!--<span>2017-11-30</span>-->
-          <!--</div>-->
-          <!--</div>-->
-          <!--<div class="detail-body jieda-body photos">-->
-          <!--<p>蓝瘦那个香菇，这是一条没被采纳的回帖</p>-->
-          <!--</div>-->
-          <!--<div class="jieda-reply">-->
-          <!--<span class="jieda-zan" type="zan">-->
-          <!--<i class="iconfont icon-zan"></i>-->
-          <!--<em>0</em>-->
-          <!--</span><span type="reply">-->
-          <!--<i class="iconfont icon-svgmoban53"></i>回复-->
-          <!--</span>-->
-          <!--<div class="jieda-admin">-->
-          <!--<span type="edit">编辑</span>-->
-          <!--<span type="del">删除</span>-->
-          <!--<span class="jieda-accept" type="accept">采纳</span>-->
-          <!--</div>-->
-          <!--</div>-->
-          <!--</li>-->
-          <!-- 无数据时 -->
           <li class="fly-none">消灭零回复</li>
         </ul>
 
@@ -299,7 +266,6 @@
 </script>
 <script type="text/html" id="replyTemplate">
   <li>
-    <a name="item-1111111111"></a>
     <div class="detail-about detail-about-reply">
       <a class="fly-avatar" href="">
         <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt=" ">
@@ -365,6 +331,7 @@
     var laypage = layui.laypage;
     var topicId = [[${id}]];
     var page = [[${page}]];
+    var topicType = null;
 
     //加载帖子内容
     $.get(preUrl + '/topic/content', {id: topicId, userId: $('#userId').val()}, function (res) {
@@ -372,6 +339,8 @@
         $('#topic').html(res.data.title);
         $('#updateTime').html(res.data.updateTime);
         $('#content').html(fly.content(res.data.content));
+        topicType = res.data.topicType;
+        loadReply(page);
         photoHandler();
         badgeInit(res.data);
       } else {
@@ -379,7 +348,6 @@
       }
     }, 'json');
 
-    loadReply(page);
 
     //徽章点击事件
     $('body').on('click', '.jie-admin', function () {
@@ -394,6 +362,36 @@
       } else {
         badgeClick(badge);
       }
+    });
+
+    //  采纳点击事件
+    $('body').on('click', '.jieda-accept', function () {
+      var replyId = $(this).parents('li').data('replyId');
+      layer.confirm('是否采纳该回答为最佳答案？', {icon: 3, anim: 5}, function (index) {
+        $.post(preUrl + '/topicReply/adoption', {id: replyId, topicId: topicId}, function (res) {
+          if (res.status === 0) {
+            location.href = res.action;
+          } else {
+            layer.alert(res.msg, {icon: 2, shift: 6});
+          }
+        }, 'json');
+      });
+    });
+
+    //  删除评论
+    $('body').on('click', '.replyDel', function () {
+      var replyId = $(this).parents('li').data('replyId');
+      layer.confirm('确定要删除该评论吗？', {icon: 3}, function (index) {
+        $.post(preUrl + '/topicReply/delete', {id: replyId}, function (res) {
+          if (res.status == 0) {
+            layer.msg(res.msg, {icon: 1});
+            loadReply($('#jieda').children().length == 1 ? page - 1 : page);
+            layer.close(index);
+          } else {
+            layer.alert(res.msg, {icon: 2, shift: 6});
+          }
+        }, 'json');
+      });
     });
 
     //头部小徽章初始化
@@ -506,13 +504,14 @@
           loadPage(res.data.total, res.data.current);
           $.each(res.data.records, function (index, obj) {
             var reply = $($('#replyTemplate').html());
-            $('.jieda-body', reply).attr('replyId', obj.id);
+            reply.data('replyId', obj.id);
             $('.jieda-body', reply).html(fly.content(obj.replyContent));
             $('#replyTime', reply).html(obj.createTime);
             if (obj.adoption != 'ADOPTION') {
               $('.icon-caina', reply).remove();
-            } else {
-              $('.jieda-accept').remove();
+            }
+            if (topicType == 'FINISH') {
+              $('.jieda-accept', reply).remove();
             }
             if (obj.userId != $('#userId').val() || obj.adoption === 'ADOPTION') {
               $('.replyDel', reply).remove();
@@ -522,36 +521,6 @@
         }
       }, 'json');
     }
-
-    //  采纳点击事件
-    $('body').on('click', '.jieda-accept', function () {
-      var replyId = $(this).parents('li').find('.jieda-body').attr('replyId');
-      layer.confirm('是否采纳该回答为最佳答案？', {icon: 3, anim: 5}, function (index) {
-        $.post(preUrl + '/topicReply/adoption', {id: replyId, topicId: topicId}, function (res) {
-          if (res.status === 0) {
-            location.href = res.action;
-          } else {
-            layer.alert(res.msg, {icon: 2, shift: 6});
-          }
-        }, 'json');
-      });
-    });
-
-    //  删除评论
-    $('body').on('click', '.replyDel', function () {
-      var replyId = $(this).parents('li').find('.jieda-body').attr('replyId');
-      layer.confirm('确定要删除该评论吗？', {icon: 3}, function (index) {
-        $.post(preUrl + '/topicReply/delete', {id: replyId}, function (res) {
-          if (res.status == 0) {
-            layer.msg(res.msg, {icon: 1});
-            loadReply(page);
-            layer.close(index);
-          } else {
-            layer.alert(res.msg, {icon: 2, shift: 6});
-          }
-        }, 'json');
-      });
-    })
   });
 </script>
 
