@@ -21,6 +21,8 @@ public class TopicReplyServiceImpl extends ServiceImpl<TopicReplyMapper, TopicRe
     private TopicReplyService topicReplyService;
     @Autowired
     private TopicService topicService;
+    @Autowired
+    private TopicReplyMapper topicReplyMapper;
 
     @Override
     public IPage<TopicReply> getReplyPage(Long topicId, Long page) {
@@ -39,5 +41,10 @@ public class TopicReplyServiceImpl extends ServiceImpl<TopicReplyMapper, TopicRe
                 .set(Topic::getTopicType, "FINISH")
                 .set(Topic::getUpdateTime, new Date())
                 .eq(Topic::getId, topicReply.getTopicId()));
+    }
+
+    @Override
+    public IPage<TopicReply> getUserReply(String userId, Long page) {
+        return topicReplyMapper.getUserReply(new Page<>(page, 10), userId);
     }
 }

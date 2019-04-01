@@ -8,4 +8,6 @@ public interface TopicReplyService extends IService<TopicReply> {
     IPage<TopicReply> getReplyPage(Long topicId, Long page);
 
     boolean adoption(TopicReply topicReply);
+
+    IPage<TopicReply> getUserReply(String userId, Long page);
 }

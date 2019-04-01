@@ -208,7 +208,7 @@
 
     //加载发帖
     function loadPublish(curr) {
-      $.get(preUrl + '/topic/getPublish', {page: curr}, function (res) {
+      $.get(preUrl + '/topic/publish', {page: curr}, function (res) {
         var list = res.data.records;
         if (list) {
           $('#publish').empty();
@@ -238,7 +238,7 @@
 
     //  加载收藏
     function loadCollection(page) {
-      $.get(preUrl + '/topic/getCollection', {page: page}, function (res) {
+      $.get(preUrl + '/topic/collection', {page: page}, function (res) {
         var list = res.data.records;
         if (list) {
           $('#collectionContent').empty();

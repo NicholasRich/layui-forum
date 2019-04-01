@@ -53,16 +53,17 @@ public class TopicController {
         return "jie/add";
     }
 
-    @GetMapping(value = {"detail/{id}/{page}", "detail/{id}"})
-    public String detail(Model model, @PathVariable Long id, @PathVariable(required = false) Long page) {
+    @GetMapping("detail/{id}")
+    public String detail(Model model, @PathVariable Long id, Long page, Long replyId) {
         model.addAttribute("id", id);
         model.addAttribute("page", page);
+        model.addAttribute("replyId", replyId);
         return "jie/detail";
     }
 
-    @GetMapping("content")
+    @GetMapping("content/{id}")
     @ResponseBody
-    public ResultDTO<Topic> content(Long id) {
+    public ResultDTO<Topic> content(@PathVariable Long id) {
         return new ResultDTO<Topic>().dataSuccess(topicService.getDetail(id, UserUtil.getUserId()));
     }
 
@@ -106,7 +107,7 @@ public class TopicController {
         }
     }
 
-    @GetMapping("getPublish")
+    @GetMapping("publish")
     @ResponseBody
     public ResultDTO<IPage<Topic>> getPublish(Long page) {
         return new ResultDTO<IPage<Topic>>().dataSuccess(topicService.getPublish(UserUtil.getUserId(), page));
@@ -118,9 +119,10 @@ public class TopicController {
         return new ResultDTO<List<Map<String, Object>>>().dataSuccess(topicService.getTopicCount(UserUtil.getUserId()));
     }
 
-    @GetMapping("getCollection")
+    @GetMapping("collection")
     @ResponseBody
     public ResultDTO<IPage<Topic>> getCollection(Long page) {
         return new ResultDTO<IPage<Topic>>().dataSuccess(topicService.getCollection(UserUtil.getUserId(), page));
     }
+
 }

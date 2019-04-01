@@ -3,9 +3,11 @@ package com.ylzinfo.forum.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Date;
 //id               bigint auto_increment
 //        primary key,
 //        city             varchar(255) null comment '地区',
@@ -34,4 +36,6 @@ public class User implements Serializable {
     private String personSignature;
     private String sex;
     private String userId;
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+08:00")
+    private Date createTime;
 }

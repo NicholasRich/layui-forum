@@ -10,6 +10,7 @@ import com.ylzinfo.forum.util.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -61,5 +62,11 @@ public class TopicReplyController {
             return new ResultDTO().success("删除成功");
         }
         return new ResultDTO().fail("删除失败");
+    }
+
+    @GetMapping("user/{userId}")
+    @ResponseBody
+    public ResultDTO<IPage<TopicReply>> userReply(@PathVariable String userId, Long page) {
+        return new ResultDTO<IPage<TopicReply>>().dataSuccess(topicReplyService.getUserReply(userId, page));
     }
 }

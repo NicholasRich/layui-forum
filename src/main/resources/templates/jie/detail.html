@@ -53,7 +53,7 @@
       <li class="layui-nav-item">
         <a class="fly-nav-avatar" href="javascript:;">
           <cite class="layui-hide-xs">贤心</cite>
-          <input type="hidden" value="admin" id="userId">
+          <input type="hidden" value="1" id="userId">
           <i class="iconfont icon-renzheng layui-hide-xs" title="认证信息：layui 作者"></i>
           <i class="layui-badge fly-badge-vip layui-hide-xs">VIP3</i>
           <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg">
@@ -333,9 +333,10 @@
     var topicId = [[${id}]];
     var page = [[${page}]];
     var topicType = null;
+    var replyId = [[${replyId}]];
 
     //加载帖子内容
-    $.get(preUrl + '/topic/content', {id: topicId}, function (res) {
+    $.get(preUrl + '/topic/content/' + topicId, function (res) {
       if (res.status === 0) {
         $('#topic').html(res.data.title);
         $('#updateTime').html(res.data.updateTime);
@@ -517,13 +518,14 @@
     //  加载回复
     function loadReply(curr) {
       $.get(preUrl + '/topicReply/replyPage', {page: curr, topicId: topicId}, function (res) {
+        $('[href="#comment"]').append(' ' + res.data.total);
         if (res.data.records.length > 0) {
           $('#jieda').empty();
           page = curr;
           loadPage(res.data.total, res.data.current);
           $.each(res.data.records, function (index, obj) {
             var reply = $($('#replyTemplate').html());
-            reply.data('replyId', obj.id);
+            reply.attr('data-replyId', obj.id);
             $('.jieda-body', reply).html(fly.content(obj.replyContent));
             $('#replyTime', reply).html(obj.createTime);
             if (obj.adoption != 'ADOPTION') {
@@ -537,6 +539,10 @@
             }
             $('#jieda').append(reply);
           });
+          if (replyId != null) {
+            $(window).scrollTop($('[data-replyId=' + replyId + ']').offset().top - 60);
+            replyId = null;
+          }
         }
       }, 'json');
     }

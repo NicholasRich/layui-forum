@@ -3,7 +3,7 @@
 <mapper namespace="com.ylzinfo.forum.mapper.TopicMapper">
 
   <select id="getPublish" resultType="com.ylzinfo.forum.entity.Topic">
-    select a.id, a.title, a.update_time, a.topic_type, count(b.id) replyNum
+    select a.id, a.title, a.update_time, a.topic_type, a.marrow, count(b.id) replyNum
     from cm_topic a
         left join pm_topic_reply b on a.id = b.topic_id
     where a.user_id = #{userId}
