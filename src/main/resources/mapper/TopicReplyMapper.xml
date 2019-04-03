@@ -6,5 +6,29 @@
     from pm_topic_reply a
            left join cm_topic b on a.topic_id = b.id
     where a.user_id = #{userId}
+    order by a.id desc
+  </select>
+  <select id="getReplyPage" resultType="com.ylzinfo.forum.entity.TopicReply">
+    select a.*, b.display_name displayName
+    from pm_topic_reply a
+           left join cm_user b on a.user_id = b.id
+    where topic_id = #{topicId}
+    order by adoption,id
+  </select>
+  <select id="getMessage" resultType="com.ylzinfo.forum.entity.TopicReply">
+    select a.id, b.title, b.id topicId, c.id userId, c.display_name displayName, a.create_time, floor(a.number / 10 + 1) page
+    from (select a.id,
+                 a.user_id,
+                 a.create_time,
+                 @rank := case when @topicId = a.topic_id then @rank + 1 else 0 end number,
+                 @topicId := a.topic_id                                             topic_id
+          from pm_topic_reply a,
+               (select @rank := 0, @topicId := '') b
+          order by topic_id, adoption, id) a
+           left join cm_topic b on a.topic_id = b.id
+           left join cm_user c on a.user_id = c.id
+    where b.user_id = 1
+      and a.user_id != 1
+    order by a.id desc
   </select>
 </mapper>

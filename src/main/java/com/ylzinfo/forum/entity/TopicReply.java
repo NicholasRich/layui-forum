@@ -24,4 +24,8 @@ public class TopicReply implements Serializable {
 
     @TableField(exist = false)
     private String topicTitle;
+    @TableField(exist = false)
+    private String displayName;
+    @TableField(exist = false)
+    private Long page;
 }

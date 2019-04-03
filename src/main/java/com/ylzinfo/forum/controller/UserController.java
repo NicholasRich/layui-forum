@@ -35,4 +35,10 @@ public class UserController {
         user.setPassword(null);
         return new ResultDTO<User>().dataSuccess(user);
     }
+
+    @GetMapping("message")
+    public String message() {
+        return "/user/message";
+    }
+
 }

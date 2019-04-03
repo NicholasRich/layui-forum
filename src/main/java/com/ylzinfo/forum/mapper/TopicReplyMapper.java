@@ -8,4 +8,8 @@ import org.apache.ibatis.annotations.Param;
 
 public interface TopicReplyMapper extends BaseMapper<TopicReply> {
     IPage<TopicReply> getUserReply(Page<TopicReply> page, @Param("userId") Long userId);
+
+    IPage<TopicReply> getReplyPage(Page<TopicReply> page, @Param("topicId") Long topicId);
+
+    IPage<TopicReply> getMessage(Page<TopicReply> page, @Param("userId")Long userId);
 }

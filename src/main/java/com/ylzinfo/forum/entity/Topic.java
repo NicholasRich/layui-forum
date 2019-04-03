@@ -42,4 +42,6 @@ public class Topic implements Serializable {
     private Long topId;
     @TableField(exist = false)
     private Long collectionId;
+    @TableField(exist = false)
+    private String displayName;
 }

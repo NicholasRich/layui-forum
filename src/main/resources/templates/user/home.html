@@ -38,8 +38,8 @@
           <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg">
         </a>
         <dl class="layui-nav-child">
-          <dd><a th:href="@{/user/set.html}"><i class="layui-icon">&#xe620;</i>基本设置</a></dd>
-          <dd><a th:href="@{/user/message.html}"><i class="iconfont icon-tongzhi" style="top: 4px;"></i>我的消息</a></dd>
+          <dd><a th:href="@{/user/set}"><i class="layui-icon">&#xe620;</i>基本设置</a></dd>
+          <dd><a th:href="@{/user/message}"><i class="iconfont icon-tongzhi" style="top: 4px;"></i>我的消息</a></dd>
           <dd><a th:href="@{/user/home}"><i class="layui-icon" style="margin-left: 2px; font-size: 22px;">&#xe68e;</i>我的主页</a></dd>
           <hr style="margin: 5px 0;">
           <dd><a href="" style="text-align: center;">退出</a></dd>
@@ -86,10 +86,10 @@
     <div class="layui-col-md6 fly-home-jie">
       <div class="fly-panel">
         <h3 class="fly-panel-title" id="publishName"> 最近的发帖</h3>
-        <ul class="jie-row" th:href="@{/topic/publish}" style="min-height: 400px">
+        <ul class="jie-row" style="min-height: 400px">
           <!--内容-->
           <div class="fly-none" style="min-height: 50px; padding:30px 0; height:auto;">
-            <i style="font-size:14px;">没有发表任何求解</i>
+            <i style="font-size:14px;">没有发表任何帖子</i>
           </div>
         </ul>
         <div id="topicPage" style="text-align: center"></div>
@@ -100,28 +100,6 @@
       <div class="fly-panel">
         <h3 class="fly-panel-title" id="replyName"> 最近的回答</h3>
         <ul class="home-jieda">
-          <!--<li>-->
-          <!--<p>-->
-          <!--<span>1分钟前</span>-->
-          <!--在<a href="" target="_blank">tips能同时渲染多个吗?</a>中回答：-->
-          <!--</p>-->
-          <!--<div class="home-dacontent">-->
-          <!--尝试给layer.photos加上这个属性试试：-->
-          <!--<pre>-->
-          <!--full: true         -->
-          <!--</pre>-->
-          <!--文档没有提及-->
-          <!--</div>-->
-          <!--</li>-->
-          <!--<li>-->
-          <!--<p>-->
-          <!--<span>5分钟前</span>-->
-          <!--在<a href="" target="_blank">在Fly社区用的是什么系统啊?</a>中回答：-->
-          <!--</p>-->
-          <!--<div class="home-dacontent">-->
-          <!--Fly社区采用的是NodeJS。分享出来的只是前端模版-->
-          <!--</div>-->
-          <!--</li>-->
           <div class="fly-none" style="min-height: 50px; padding:30px 0; height:auto;"><span>没有回复任何帖子</span></div>
         </ul>
         <div id="replyPage" style="text-align: center"></div>
@@ -201,7 +179,7 @@
     loadReply(1);
 
     function loadTopic(page) {
-      $.get($('.jie-row').attr('href'), {page: page}, function (res) {
+      $.get(preUrl + '/topic/user/' + userId + '/publish', {page: page}, function (res) {
         if (res.data.records.length > 0) {
           $('.jie-row').empty();
           topicPage(res.data.total, res.data.current);

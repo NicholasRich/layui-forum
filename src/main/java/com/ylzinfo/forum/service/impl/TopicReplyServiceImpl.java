@@ -26,9 +26,7 @@ public class TopicReplyServiceImpl extends ServiceImpl<TopicReplyMapper, TopicRe
 
     @Override
     public IPage<TopicReply> getReplyPage(Long topicId, Long page) {
-        return topicReplyService.page(new Page<>(page, 10), Wrappers.<TopicReply>lambdaQuery()
-                .eq(TopicReply::getTopicId, topicId)
-                .orderByAsc(TopicReply::getAdoption));
+        return topicReplyMapper.getReplyPage(new Page<>(page, 10), topicId);
     }
 
     @Override
@@ -46,5 +44,10 @@ public class TopicReplyServiceImpl extends ServiceImpl<TopicReplyMapper, TopicRe
     @Override
     public IPage<TopicReply> getUserReply(Long userId, Long page) {
         return topicReplyMapper.getUserReply(new Page<>(page, 10), userId);
+    }
+
+    @Override
+    public IPage<TopicReply> getMessage(Long userId, Long page) {
+        return topicReplyMapper.getMessage(new Page<>(page, 10), userId);
     }
 }

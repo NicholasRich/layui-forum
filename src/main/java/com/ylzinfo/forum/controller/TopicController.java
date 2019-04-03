@@ -107,10 +107,10 @@ public class TopicController {
         }
     }
 
-    @GetMapping("publish")
+    @GetMapping(value = {"user/{userId}/publish", "user/publish"})
     @ResponseBody
-    public ResultDTO<IPage<Topic>> getPublish(Long page) {
-        return new ResultDTO<IPage<Topic>>().dataSuccess(topicService.getPublish(UserUtil.getUserId(), page));
+    public ResultDTO<IPage<Topic>> getPublish(Long page, @PathVariable(required = false) Long userId) {
+        return new ResultDTO<IPage<Topic>>().dataSuccess(topicService.getPublish(userId == null ? UserUtil.getUserId() : userId, page));
     }
 
     @GetMapping("getTopicCount")

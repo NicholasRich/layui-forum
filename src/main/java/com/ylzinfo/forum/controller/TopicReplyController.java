@@ -69,4 +69,10 @@ public class TopicReplyController {
     public ResultDTO<IPage<TopicReply>> userReply(@PathVariable Long userId, Long page) {
         return new ResultDTO<IPage<TopicReply>>().dataSuccess(topicReplyService.getUserReply(userId, page));
     }
+
+    @GetMapping("message")
+    @ResponseBody
+    public ResultDTO<IPage<TopicReply>> message(Long page) {
+        return new ResultDTO<IPage<TopicReply>>().dataSuccess(topicReplyService.getMessage(UserUtil.getUserId(), page));
+    }
 }

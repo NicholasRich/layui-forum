@@ -33,7 +33,6 @@
       <li class="layui-nav-item">
         <a class="fly-nav-avatar" href="javascript:;">
           <cite class="layui-hide-xs">贤心</cite>
-          <input type="hidden" value="1" id="userId">
           <i class="iconfont icon-renzheng layui-hide-xs" title="认证信息：layui 作者"></i>
           <i class="layui-badge fly-badge-vip layui-hide-xs">VIP3</i>
           <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg">
@@ -145,7 +144,7 @@
     <i>收藏时间</i>
   </li>
 </script>
-<script>
+<script th:inline="javascript">
   layui.cache.page = 'user';
   layui.cache.user = {
     username: '游客'
@@ -208,7 +207,7 @@
 
     //加载发帖
     function loadPublish(curr) {
-      $.get(preUrl + '/topic/publish', {page: curr}, function (res) {
+      $.get(preUrl + '/topic/user/publish', {page: curr}, function (res) {
         var list = res.data.records;
         if (list) {
           $('#publish').empty();

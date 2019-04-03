@@ -119,21 +119,21 @@
             <!--帖子状态操作-->
           </div>
           <span class="fly-list-nums"> 
-            <a href="#comment"><i class="iconfont" title="回答">&#xe60c;</i></a>
+            <a href="#comment"><i class="iconfont" title="回答">&#xe60c;</i></a> <span id="commentCount"></span>
             <i class="iconfont" title="人气">&#xe60b;</i> 99999
           </span>
         </div>
         <div class="detail-about">
-          <a class="fly-avatar" href="../user/home.html">
+          <a class="fly-avatar publishUserHome" th:href="@{/user/id/home}">
             <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt="贤心">
           </a>
           <div class="fly-detail-user">
-            <a th:href="@{/user/home.html}" class="fly-link">
-              <cite>贤心</cite>
-              <i class="iconfont icon-renzheng" title="认证信息：{{ rows.user.approve }}"></i>
-              <i class="layui-badge fly-badge-vip">VIP3</i>
+            <a th:href="@{/user/id/home}" class="fly-link publishUserHome">
+              <cite id="publishUserName"><!--发帖用户名--></cite>
+              <!--<i class="iconfont icon-renzheng" title="认证信息：{{ rows.user.approve }}"></i>-->
+              <!--<i class="layui-badge fly-badge-vip">VIP3</i>-->
             </a>
-            <span id="updateTime">2017-11-30</span>
+            <span id="updateTime"><!--帖子更新时间--></span>
           </div>
           <div class="detail-hits" id="LAY_jieAdmin" th:attr="data-id=${id}">
             <span style="padding-right: 10px; color: #FF7200">积分：60飞吻</span>
@@ -334,6 +334,7 @@
     var page = [[${page}]];
     var topicType = null;
     var replyId = [[${replyId}]];
+    var userId = null;
 
     //加载帖子内容
     $.get(preUrl + '/topic/content/' + topicId, function (res) {
@@ -342,6 +343,11 @@
         $('#updateTime').html(res.data.updateTime);
         $('#content').html(fly.content(res.data.content));
         topicType = res.data.topicType;
+        $('#publishUserName').html(res.data.displayName);
+        var href = $('.publishUserHome').attr('href');
+        $('.publishUserHome').attr('href', href.replace('id', res.data.userId));
+        userId = res.data.userId;
+        //加载回复
         loadReply(page == null ? 1 : page);
         photoHandler();
         badgeInit(res.data);
@@ -429,18 +435,19 @@
         }
         $('#noFinish').show();
       }
-      if (data.userId == 'admin')
+      if (data.userId == '1') {
         if (data.topId) {
           $('#top').show();
           $('.fly-admin-box').append($('#cancelTop', badgeTemplate).prop('outerHTML') + ' ');
         } else {
           $('.fly-admin-box').append($('#doTop', badgeTemplate).prop('outerHTML') + ' ');
         }
-      if (data.marrow === 'NOMARROW') {
-        $('.fly-admin-box').append($('#doMarrow', badgeTemplate).prop('outerHTML') + ' ');
-      } else {
-        $('#marrow').show();
-        $('.fly-admin-box').append($('#cancelMarrow', badgeTemplate).prop('outerHTML') + ' ');
+        if (data.marrow === 'NOMARROW') {
+          $('.fly-admin-box').append($('#doMarrow', badgeTemplate).prop('outerHTML') + ' ');
+        } else {
+          $('#marrow').show();
+          $('.fly-admin-box').append($('#cancelMarrow', badgeTemplate).prop('outerHTML') + ' ');
+        }
       }
       if (data.collectionId) {
         $('#LAY_jieAdmin').append($('#cancelCollection', badgeTemplate).prop('outerHTML') + ' ');
@@ -518,7 +525,7 @@
     //  加载回复
     function loadReply(curr) {
       $.get(preUrl + '/topicReply/replyPage', {page: curr, topicId: topicId}, function (res) {
-        $('[href="#comment"]').append(' ' + res.data.total);
+        $('#commentCount').html(res.data.total);
         if (res.data.records.length > 0) {
           $('#jieda').empty();
           page = curr;
@@ -530,6 +537,7 @@
             $('#replyTime', reply).html(obj.createTime);
             $('.fly-link', reply).attr('href', preUrl + '/user/' + obj.userId + '/home');
             $('.fly-avatar', reply).attr('href', preUrl + '/user/' + obj.userId + '/home');
+            $('cite', reply).html(obj.displayName);
             if (obj.adoption != 'ADOPTION') {
               $('.icon-caina', reply).remove();
             }
@@ -538,6 +546,9 @@
             }
             if (obj.userId != $('#userId').val() || obj.adoption === 'ADOPTION') {
               $('.replyDel', reply).remove();
+            }
+            if (obj.userId != userId) {
+              $('.fly-detail-user span', reply).remove();
             }
             $('#jieda').append(reply);
           });
