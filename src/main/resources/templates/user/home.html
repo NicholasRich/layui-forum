@@ -186,6 +186,7 @@
         $('.icon-shijian').next().html(res.data.createTime + ' 加入');
         $('.icon-chengshi').next().html('来自' + res.data.city);
         $('#publishName').html(res.data.displayName + ' 最近的发帖');
+        $('.fly-home-sign').html(res.data.personSignature);
         $('#replyName').html(res.data.displayName + ' 最近的回复');
         if (res.data.sex == 'MAN') {
           $('.icon-nan').show();
