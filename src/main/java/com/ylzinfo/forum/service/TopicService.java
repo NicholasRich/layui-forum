@@ -10,13 +10,13 @@ import java.util.Map;
 public interface TopicService extends IService<Topic> {
     Long insert(Topic topic);
 
-    Topic getDetail(Long id, String userId);
+    Topic getDetail(Long id, Long userId);
 
     boolean delete(Long topicId);
 
-    IPage<Topic> getPublish(String userId, Long page);
+    IPage<Topic> getPublish(Long userId, Long page);
 
-    IPage<Topic> getCollection(String userId, Long page);
+    IPage<Topic> getCollection(Long userId, Long page);
 
-    List<Map<String, Object>> getTopicCount(String userId);
+    List<Map<String, Object>> getTopicCount(Long userId);
 }

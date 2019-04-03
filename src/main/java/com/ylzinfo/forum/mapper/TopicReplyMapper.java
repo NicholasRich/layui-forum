@@ -7,5 +7,5 @@ import com.ylzinfo.forum.entity.TopicReply;
 import org.apache.ibatis.annotations.Param;
 
 public interface TopicReplyMapper extends BaseMapper<TopicReply> {
-    IPage<TopicReply> getUserReply(Page<TopicReply> page, @Param("userId") String userId);
+    IPage<TopicReply> getUserReply(Page<TopicReply> page, @Param("userId") Long userId);
 }

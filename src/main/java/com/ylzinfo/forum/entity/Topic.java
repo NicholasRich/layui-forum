@@ -16,7 +16,7 @@ import java.util.Date;
 public class Topic implements Serializable {
     @TableId(type = IdType.AUTO)
     private Long id;
-    private String userId;
+    private Long userId;
     private String title;
     private String specialColumn;
     private BelongTypeEnum belongType;

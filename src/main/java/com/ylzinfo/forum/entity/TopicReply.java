@@ -16,7 +16,7 @@ public class TopicReply implements Serializable {
     @TableId(type = IdType.AUTO)
     private Long id;
     private Long topicId;
-    private String userId;
+    private Long userId;
     private String replyContent;
     private String adoption;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")

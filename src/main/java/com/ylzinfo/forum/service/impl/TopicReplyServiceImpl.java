@@ -44,7 +44,7 @@ public class TopicReplyServiceImpl extends ServiceImpl<TopicReplyMapper, TopicRe
     }
 
     @Override
-    public IPage<TopicReply> getUserReply(String userId, Long page) {
+    public IPage<TopicReply> getUserReply(Long userId, Long page) {
         return topicReplyMapper.getUserReply(new Page<>(page, 10), userId);
     }
 }

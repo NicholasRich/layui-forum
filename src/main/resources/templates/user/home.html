@@ -178,14 +178,10 @@
     var $ = layui.$;
     var layPage = layui.laypage;
     var userId = [[${userId}]];
-    var userName = null;
     var fly = layui.fly;
     //获取查询的用户
     $.get(preUrl + '/user/' + userId, function (res) {
       if (res.data) {
-        userName = res.data.userId;
-        //加载回复
-        loadReply(1);
         $('h1').prepend(res.data.displayName);
         $('.icon-shijian').next().html(res.data.createTime + ' 加入');
         $('.icon-chengshi').next().html('来自' + res.data.city);
@@ -200,6 +196,8 @@
     });
     //  加载提问
     loadTopic(1);
+    //加载回复
+    loadReply(1);
 
     function loadTopic(page) {
       $.get($('.jie-row').attr('href'), {page: page}, function (res) {
@@ -236,7 +234,7 @@
     }
 
     function loadReply(page) {
-      $.get(preUrl + '/topicReply/user/' + userName, {page: page}, function (res) {
+      $.get(preUrl + '/topicReply/user/' + userId, {page: page}, function (res) {
         var list = res.data.records;
         if (list.length > 0) {
           $('.home-jieda').empty();

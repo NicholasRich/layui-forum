@@ -19,7 +19,7 @@ public class UserTopicAction implements Serializable {
     @NonNull
     private Long topicId;
     @NonNull
-    private String userId;
+    private Long userId;
     @NonNull
     private String userTopicType;
     private Date createTime;

@@ -56,7 +56,7 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic> implements
     }
 
     @Override
-    public Topic getDetail(Long id, String userId) {
+    public Topic getDetail(Long id, Long userId) {
         return topicMapper.getDetail(id, userId);
     }
 
@@ -79,17 +79,17 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic> implements
     }
 
     @Override
-    public IPage<Topic> getPublish(String userId, Long page) {
+    public IPage<Topic> getPublish(Long userId, Long page) {
         return topicMapper.getPublish(new Page(page, 10), userId);
     }
 
     @Override
-    public IPage<Topic> getCollection(String userId, Long page) {
+    public IPage<Topic> getCollection(Long userId, Long page) {
         return topicMapper.getCollection(new Page(page, 10), userId);
     }
 
     @Override
-    public List<Map<String, Object>> getTopicCount(String userId) {
+    public List<Map<String, Object>> getTopicCount(Long userId) {
         return topicMapper.getPublishAndCollectionCount(userId);
     }
 
