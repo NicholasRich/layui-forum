@@ -192,8 +192,8 @@
     <a href="http://fly.layui.com/jie/2461/" target="_blank">微信公众号</a>
   </p>
 </div>
-<script th:src="@{/res/layui/layui.js}"></script>
 <th:block th:include="/common/public::js"></th:block>
+<!--<script th:src="@{/res/layui/layui.js}"></script>-->
 <script type="text/html" id="badgeTemplate">
   <div>
     <span class="layui-btn layui-btn-xs jie-admin" id="edit" href="/topicDetail/edit/">编辑此贴</span>
@@ -268,8 +268,7 @@
   }).extend({
     fly: 'index'
   }).use(['fly', 'face', 'laypage'], function () {
-    var $ = layui.$,
-        fly = layui.fly;
+    var fly = layui.fly;
     var laypage = layui.laypage;
     var form = layui.form;
     var topicId = [[${id}]];
