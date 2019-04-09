@@ -107,7 +107,7 @@ public class TopicController {
         }
     }
 
-    @GetMapping(value = {"user/{userId}/publish", "user/publish"})
+    @GetMapping(value = {"user/publish/{userId}", "user/publish"})
     @ResponseBody
     public ResultDTO<IPage<Topic>> getPublish(Long page, @PathVariable(required = false) Long userId) {
         return new ResultDTO<IPage<Topic>>().dataSuccess(topicService.getPublish(userId == null ? UserUtil.getUserId() : userId, page));

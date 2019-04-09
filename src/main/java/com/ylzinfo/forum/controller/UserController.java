@@ -1,5 +1,7 @@
 package com.ylzinfo.forum.controller;
 
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.ylzinfo.forum.dto.ResultDTO;
 import com.ylzinfo.forum.entity.User;
 import com.ylzinfo.forum.service.UserService;
@@ -22,7 +24,7 @@ public class UserController {
         return "/user/index";
     }
 
-    @GetMapping("{id}/home")
+    @GetMapping("home/{id}")
     public String home(@PathVariable Long id, Model model) {
         model.addAttribute("userId", id);
         return "/user/home";
@@ -39,6 +41,19 @@ public class UserController {
     @GetMapping("message")
     public String message() {
         return "/user/message";
+    }
+
+    @GetMapping("/login")
+    @ResponseBody
+    public User login(String userId, String password) {
+        if (StrUtil.isNotBlank(userId) && StrUtil.isNotBlank(password)) {
+            return userService.getOne(Wrappers.<User>lambdaQuery()
+                    .eq(User::getUserId, userId)
+                    .eq(User::getPassword, password));
+        }
+        User user = userService.getById(1L);
+        user.setPassword(null);
+        return user;
     }
 
 }

@@ -1,8 +1,17 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <th:block th:fragment="js">
+  <script th:src="@{/jquery/jquery1.12.4.min.js}"></script>
   <script th:inline="javascript">
     var preUrl = [[${#httpServletRequest.getContextPath()}]];
+    var userId = null;
+    $.get(preUrl + '/user/login', function (res) {
+      if (res) {
+        $('cite.layui-hide-xs').html(res.displayName);
+        userId = res.id;
+        $('.home').attr('href', $('.home').attr('href') + userId);
+      }
+    })
   </script>
 </th:block>
 <th:block th:fragment="context">

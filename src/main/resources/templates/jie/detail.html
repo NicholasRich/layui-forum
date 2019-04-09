@@ -11,65 +11,7 @@
   <link rel="stylesheet" th:href="@{/res/css/global.css}">
 </head>
 <body>
-<div class="fly-header layui-bg-black">
-  <div class="layui-container">
-    <a class="fly-logo" href="/">
-      <img th:src="@{/res/images/logo.png}" alt="layui">
-    </a>
-    <ul class="layui-nav fly-nav layui-hide-xs">
-      <li class="layui-nav-item layui-this">
-        <a href="/"><i class="iconfont icon-jiaoliu"></i>交流</a>
-      </li>
-      <li class="layui-nav-item">
-        <a th:href="@{/case/case.html}"><i class="iconfont icon-iconmingxinganli"></i>案例</a>
-      </li>
-      <li class="layui-nav-item">
-        <a href="http://www.layui.com/" target="_blank"><i class="iconfont icon-ui"></i>框架</a>
-      </li>
-    </ul>
-
-    <ul class="layui-nav fly-nav-user">
-
-      <!-- 未登入的状态 -->
-      <!--
-      <li class="layui-nav-item">
-        <a class="iconfont icon-touxiang layui-hide-xs" href="user/login.html"></a>
-      </li>
-      <li class="layui-nav-item">
-        <a href="user/login.html">登入</a>
-      </li>
-      <li class="layui-nav-item">
-        <a href="user/reg.html">注册</a>
-      </li>
-      <li class="layui-nav-item layui-hide-xs">
-        <a href="/app/qq/" onclick="layer.msg('正在通过QQ登入', {icon:16, shade: 0.1, time:0})" title="QQ登入" class="iconfont icon-qq"></a>
-      </li>
-      <li class="layui-nav-item layui-hide-xs">
-        <a href="/app/weibo/" onclick="layer.msg('正在通过微博登入', {icon:16, shade: 0.1, time:0})" title="微博登入" class="iconfont icon-weibo"></a>
-      </li>
-       -->
-
-      <!-- 登入后的状态 -->
-      <li class="layui-nav-item">
-        <a class="fly-nav-avatar" href="javascript:;">
-          <cite class="layui-hide-xs">贤心</cite>
-          <input type="hidden" value="1" id="userId">
-          <i class="iconfont icon-renzheng layui-hide-xs" title="认证信息：layui 作者"></i>
-          <i class="layui-badge fly-badge-vip layui-hide-xs">VIP3</i>
-          <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg">
-        </a>
-        <dl class="layui-nav-child">
-          <dd><a th:href="@{/user/set.html}"><i class="layui-icon">&#xe620;</i>基本设置</a></dd>
-          <dd><a th:href="@{/user/message.html}"><i class="iconfont icon-tongzhi" style="top: 4px;"></i>我的消息</a></dd>
-          <dd><a th:href="@{/user/home.html}"><i class="layui-icon" style="margin-left: 2px; font-size: 22px;">&#xe68e;</i>我的主页</a></dd>
-          <hr style="margin: 5px 0;">
-          <dd><a href="" style="text-align: center;">退出</a></dd>
-        </dl>
-      </li>
-    </ul>
-  </div>
-</div>
-
+<th:block th:include="common/header"></th:block>
 <div class="layui-hide-xs">
   <div class="fly-panel fly-column">
     <div class="layui-container">
@@ -124,11 +66,11 @@
           </span>
         </div>
         <div class="detail-about">
-          <a class="fly-avatar publishUserHome" th:href="@{/user/id/home}">
+          <a class="fly-avatar publishUserHome" th:href="@{/user/home/}">
             <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt="贤心">
           </a>
           <div class="fly-detail-user">
-            <a th:href="@{/user/id/home}" class="fly-link publishUserHome">
+            <a th:href="@{/user/home/}" class="fly-link publishUserHome">
               <cite id="publishUserName"><!--发帖用户名--></cite>
               <!--<i class="iconfont icon-renzheng" title="认证信息：{{ rows.user.approve }}"></i>-->
               <!--<i class="layui-badge fly-badge-vip">VIP3</i>-->
@@ -334,19 +276,17 @@
     var page = [[${page}]];
     var topicType = null;
     var replyId = [[${replyId}]];
-    var userId = null;
 
     //加载帖子内容
     $.get(preUrl + '/topic/content/' + topicId, function (res) {
-      if (res.status === 0) {
+      if (res.status == 0) {
         $('#topic').html(res.data.title);
         $('#updateTime').html(res.data.updateTime);
         $('#content').html(fly.content(res.data.content));
         topicType = res.data.topicType;
         $('#publishUserName').html(res.data.displayName);
         var href = $('.publishUserHome').attr('href');
-        $('.publishUserHome').attr('href', href.replace('id', res.data.userId));
-        userId = res.data.userId;
+        $('.publishUserHome').attr('href', href + userId);
         //加载回复
         loadReply(page == null ? 1 : page);
         photoHandler();
@@ -363,6 +303,7 @@
         if (res.status == 0) {
           layer.msg(res.msg, {icon: 1});
           loadReply(res.data);
+          $(data.form)[0].reset();
         } else {
           layer.alert(res.msg, {icon: 2, anim: 6});
         }
@@ -374,9 +315,9 @@
     //徽章点击事件
     $('body').on('click', '.jie-admin', function () {
       var badge = $(this);
-      if (badge.attr('id') === 'edit') {
+      if (badge.attr('id') == 'edit') {
         location.href = preUrl + badge.attr('href') + topicId;
-      } else if (badge.attr('id') === 'topicDel') {
+      } else if (badge.attr('id') == 'topicDel') {
         layer.confirm('确定要删除该帖吗？', {icon: 3}, function (index) {
           badgeClick(badge);
           location.href = preUrl + '/jie/index';
@@ -388,10 +329,10 @@
 
     //  采纳点击事件
     $('body').on('click', '.jieda-accept', function () {
-      var replyId = $(this).parents('li').data('replyId');
+      var replyId = $(this).parents('li').data('replyid');
       layer.confirm('是否采纳该回答为最佳答案？', {icon: 3, anim: 5}, function (index) {
         $.post(preUrl + '/topicReply/adoption', {id: replyId, topicId: topicId}, function (res) {
-          if (res.status === 0) {
+          if (res.status == 0) {
             topicType = 'FINISH';
             loadReply(1);
             layer.msg(res.msg, {icon: 1});
@@ -406,7 +347,7 @@
 
     //  删除评论
     $('body').on('click', '.replyDel', function () {
-      var replyId = $(this).parents('li').data('replyId');
+      var replyId = $(this).parents('li').data('replyid');
       layer.confirm('确定要删除该评论吗？', {icon: 3}, function (index) {
         $.post(preUrl + '/topicReply/delete', {id: replyId}, function (res) {
           if (res.status == 0) {
@@ -424,13 +365,13 @@
     function badgeInit(data) {
       var badgeTemplate = $($('#badgeTemplate').html());
       $('#belongType').html(data.belongType);
-      if (data.userId === $('#userId').val() || data.userId === 'admin') {
+      if (data.userId == userId || data.userId == 'admin') {
         $('.fly-admin-box').append($('#topicDel', badgeTemplate).prop('outerHTML') + ' ');
       }
-      if (data.topicType === 'FINISH') {
+      if (data.topicType == 'FINISH') {
         $('#finish').show();
       } else {
-        if (data.userId === $('#userId').val()) {
+        if (data.userId == userId) {
           $('#LAY_jieAdmin').append($('#edit', badgeTemplate).prop('outerHTML') + ' ');
         }
         $('#noFinish').show();
@@ -442,7 +383,7 @@
         } else {
           $('.fly-admin-box').append($('#doTop', badgeTemplate).prop('outerHTML') + ' ');
         }
-        if (data.marrow === 'NOMARROW') {
+        if (data.marrow == 'NOMARROW') {
           $('.fly-admin-box').append($('#doMarrow', badgeTemplate).prop('outerHTML') + ' ');
         } else {
           $('#marrow').show();
@@ -459,7 +400,7 @@
     function badgeClick(badge) {
       var i = layer.load(1, {shade: 0.3});
       $.post(preUrl + badge.attr('href'), {topicId: topicId}, function (res) {
-        if (res.status === 0) {
+        if (res.status == 0) {
           var badgeTemplate = $($('#badgeTemplate').html());
           layer.msg(res.msg, {icon: 1});
           switch (badge.attr('id')) {
@@ -535,8 +476,8 @@
             reply.attr('data-replyId', obj.id);
             $('.jieda-body', reply).html(fly.content(obj.replyContent));
             $('#replyTime', reply).html(obj.createTime);
-            $('.fly-link', reply).attr('href', preUrl + '/user/' + obj.userId + '/home');
-            $('.fly-avatar', reply).attr('href', preUrl + '/user/' + obj.userId + '/home');
+            $('.fly-link', reply).attr('href', preUrl + '/user/home/' + obj.userId);
+            $('.fly-avatar', reply).attr('href', preUrl + '/user/home/' + obj.userId);
             $('cite', reply).html(obj.displayName);
             if (obj.adoption != 'ADOPTION') {
               $('.icon-caina', reply).remove();
@@ -544,7 +485,7 @@
             if (topicType == 'FINISH') {
               $('.jieda-accept', reply).remove();
             }
-            if (obj.userId != $('#userId').val() || obj.adoption === 'ADOPTION') {
+            if (obj.userId != userId || obj.adoption == 'ADOPTION') {
               $('.replyDel', reply).remove();
             }
             if (obj.userId != userId) {
@@ -556,6 +497,9 @@
             $(window).scrollTop($('[data-replyId=' + replyId + ']').offset().top - 60);
             replyId = null;
           }
+        } else {
+          $('#jieda').empty();
+          $('#jieda').append('<li class="fly-none">消灭零回复</li>');
         }
       }, 'json');
     }

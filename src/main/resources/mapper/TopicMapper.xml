@@ -22,6 +22,7 @@
            left join rl_user_topic_action b on a.id = b.topic_id
     where user_topic_type = 'COLLECTION'
       and b.user_id = #{userId}
+    order by create_time desc
   </select>
   <select id="getDetail" resultType="com.ylzinfo.forum.entity.Topic">
     select a.*, b.id detailId, b.content, c.id topId, d.display_name displayName, e.id collectionId
