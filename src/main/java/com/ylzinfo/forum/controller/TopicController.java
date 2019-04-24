@@ -31,10 +31,9 @@ public class TopicController {
     @Autowired
     private HttpServletRequest request;
 
-    @RequestMapping("get")
-    @ResponseBody
-    public List<Topic> list() {
-        return topicService.list();
+    @RequestMapping("list")
+    public String list() {
+        return "system/topic_list";
     }
 
     @PostMapping("insert")

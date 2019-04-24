@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>文章列表</title>
+  <link rel="stylesheet" th:href="@{/res/layui/css/layui.css}" media="all">
+</head>
+<body>
+<div class="layui-col-md10 layui-col-md-offset1">
+  <table class="layui-table" lay-data="{height:500, url:'/demo/table/user/', page:true, id:'table'}" lay-filter="test">
+    <thead>
+    <tr>
+      <th lay-data="{field:'id', minWidth:100}">ID</th>
+      <th lay-data="{field:'title', minWidth:100}">标题</th>
+      <th lay-data="{field:'belongType', minWidth:100}">类别</th>
+      <th lay-data="{field:'prop', minWidth:100}">属性</th>
+      <th lay-data="{field:'updateTime', minWidth:100}">最后编辑时间</th>
+      <th lay-data="{field:'topicType', minWidth:100}">状态</th>
+      <th lay-data="{field:'endTime', minWidth:100}">结帖时间</th>
+    </tr>
+    </thead>
+  </table>
+</div>
+<th:block th:include="/common/public::js"></th:block>
+<script>
+  layui.use(['table'], function () {
+    var table = layui.table;
+  });
+</script>
+</body>
+</html>
