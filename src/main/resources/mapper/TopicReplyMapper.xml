@@ -2,10 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.ylzinfo.forum.mapper.TopicReplyMapper">
   <select id="getUserReply" resultType="com.ylzinfo.forum.entity.TopicReply">
-    select a.*, b.title topicTitle
-    from pm_topic_reply a
+    select a.id, a.create_time, a.reply_content, a.topic_id, floor(a.num / 10 + 1) page, b.title topicTitle
+    from (select a.*, @num := case when @topicId = topic_id then @num + 1 else 0 end num, @topicId := topic_id topicId
+          from pm_topic_reply a,
+               (select @num := 0, @topicId := '') b
+          where user_id = 1
+          order by topic_id, adoption, id desc) a
            left join cm_topic b on a.topic_id = b.id
-    where a.user_id = #{userId}
     order by a.id desc
   </select>
   <select id="getReplyPage" resultType="com.ylzinfo.forum.entity.TopicReply">
@@ -16,19 +19,14 @@
     order by adoption,id
   </select>
   <select id="getMessage" resultType="com.ylzinfo.forum.entity.TopicReply">
-    select a.id, b.title, b.id topicId, c.id userId, c.display_name displayName, a.create_time, floor(a.number / 10 + 1) page
-    from (select a.id,
-                 a.user_id,
-                 a.create_time,
-                 @rank := case when @topicId = a.topic_id then @rank + 1 else 0 end number,
-                 @topicId := a.topic_id                                             topic_id
+    select a.id, a.user_id, b.title topicTitle, a.topic_id, c.display_name, a.create_time, floor(a.number / 10 + 1) page
+    from (select a.*, @rank := case when @topicId = topic_id then @rank + 1 else 0 end number, @topicId := a.topic_id
           from pm_topic_reply a,
                (select @rank := 0, @topicId := '') b
-          order by topic_id, adoption, id) a
+          where user_id != #{userId}
+          order by topic_id, adoption, id desc) a
            left join cm_topic b on a.topic_id = b.id
            left join cm_user c on a.user_id = c.id
-    where b.user_id = 1
-      and a.user_id != 1
     order by a.id desc
   </select>
 </mapper>
