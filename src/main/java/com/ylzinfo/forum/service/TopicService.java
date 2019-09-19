@@ -4,9 +4,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ylzinfo.forum.entity.Topic;
 
-import java.util.List;
-import java.util.Map;
-
 public interface TopicService extends IService<Topic> {
     Long insert(Topic topic);
 
@@ -18,5 +15,4 @@ public interface TopicService extends IService<Topic> {
 
     IPage<Topic> getCollection(Long userId, Long page);
 
-    List<Map<String, Object>> getTopicCount(Long userId);
 }

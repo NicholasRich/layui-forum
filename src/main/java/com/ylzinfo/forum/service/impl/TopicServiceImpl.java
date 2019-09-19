@@ -23,9 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Map;
-
 @Service
 public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic> implements TopicService {
     @Autowired
@@ -86,11 +83,6 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic> implements
     @Override
     public IPage<Topic> getCollection(Long userId, Long page) {
         return topicMapper.getCollection(new Page(page, 10), userId);
-    }
-
-    @Override
-    public List<Map<String, Object>> getTopicCount(Long userId) {
-        return topicMapper.getPublishAndCollectionCount(userId);
     }
 
 }

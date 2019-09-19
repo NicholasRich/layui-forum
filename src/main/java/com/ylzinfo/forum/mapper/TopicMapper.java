@@ -6,13 +6,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ylzinfo.forum.entity.Topic;
 import org.apache.ibatis.annotations.Param;
 
-import java.util.List;
-import java.util.Map;
-
 public interface TopicMapper extends BaseMapper<Topic> {
     IPage<Topic> getPublish(Page page, @Param("userId") Long userId);
-
-    List<Map<String, Object>> getPublishAndCollectionCount(@Param("userId") Long userId);
 
     IPage<Topic> getCollection(Page page, @Param("userId") Long userId);
 

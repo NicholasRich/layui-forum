@@ -20,8 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("topic")
@@ -110,12 +108,6 @@ public class TopicController {
     @ResponseBody
     public ResultDTO<IPage<Topic>> getPublish(Long page, @PathVariable(required = false) Long userId) {
         return new ResultDTO<IPage<Topic>>().dataSuccess(topicService.getPublish(userId == null ? UserUtil.getUserId() : userId, page));
-    }
-
-    @GetMapping("getTopicCount")
-    @ResponseBody
-    public ResultDTO<List<Map<String, Object>>> getTopicCount() {
-        return new ResultDTO<List<Map<String, Object>>>().dataSuccess(topicService.getTopicCount(UserUtil.getUserId()));
     }
 
     @GetMapping("collection")

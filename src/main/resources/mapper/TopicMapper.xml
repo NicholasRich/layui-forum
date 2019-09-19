@@ -10,12 +10,6 @@
     group by a.id
     order by update_time desc
   </select>
-  <select id="getPublishAndCollectionCount" resultType="java.util.Map">
-    select user_topic_type userTopicType, count(0) count
-    from rl_user_topic_action
-    where user_id = #{userId}
-    group by user_topic_type
-  </select>
   <select id="getCollection" resultType="com.ylzinfo.forum.entity.Topic">
     select title, b.create_time, topic_id id
     from cm_topic a

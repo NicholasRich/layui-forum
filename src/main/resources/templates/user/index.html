@@ -81,7 +81,8 @@
 </div>
 
 <div class="fly-footer">
-  <p><a href="http://fly.layui.com/" target="_blank">Fly社区</a> 2017 &copy; <a href="http://www.layui.com/" target="_blank">layui.com 出品</a></p>
+  <p><a href="http://fly.layui.com/" target="_blank">Fly社区</a> 2017 &copy; <a href="http://www.layui.com/"
+                                                                              target="_blank">layui.com 出品</a></p>
   <p>
     <a href="http://fly.layui.com/jie/3147/" target="_blank">付费计划</a>
     <a href="http://www.layui.com/template/fly/" target="_blank">获取Fly社区模版</a>
@@ -124,18 +125,6 @@
   }).use(['fly', 'laypage'], function () {
     var layPage = layui.laypage;
 
-    //获取收藏和发帖数
-    $.get(preUrl + '/topic/getTopicCount', {}, function (res) {
-      if (res.data) {
-        $.each(res.data, function (index, elem) {
-          if (elem.userTopicType == 'PUBLISH') {
-            $('[lay-id="index"] span').html(elem.count);
-          } else if (elem.userTopicType == 'COLLECTION') {
-            $('[lay-id="collection"] span').html(elem.count);
-          }
-        })
-      }
-    });
     //异步加载数据
     loadPublish(1);
     loadCollection(1);
@@ -170,6 +159,7 @@
     //加载发帖
     function loadPublish(curr) {
       $.get(preUrl + '/topic/user/publish', {page: curr}, function (res) {
+        $('[lay-id="index"] span').html(res.data.total);
         var list = res.data.records;
         if (list) {
           $('#publish').empty();
@@ -200,6 +190,7 @@
     //  加载收藏
     function loadCollection(page) {
       $.get(preUrl + '/topic/collection', {page: page}, function (res) {
+        $('[lay-id="collection"] span').html(res.data.total);
         var list = res.data.records;
         if (list) {
           $('#collectionContent').empty();
